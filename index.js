@@ -46,12 +46,16 @@ function isDefaultProperty(property) {
  *
  */
 function validateFrontmatter(frontmatter) {
-  let validated = revalidator.validate(frontmatter, schema)
+  try {
+    let validated = revalidator.validate(frontmatter, schema)
 
-  if (validated.errors.length > 0) {
-    console.error('Frontmatter failed validation.')
-    console.error(validated.errors) // Todo: This would be nicer if we parsed it so that it was human readable.
-    //throw new Error()
+    if (validated.errors.length > 0) {
+      console.error('Frontmatter failed validation.')
+      console.error(validated.errors) // Todo: This would be nicer if we parsed it so that it was human readable.
+      throw `Frontmatter validation returned errors ${validated.errors}`
+    }
+  } catch (e) {
+    console.error(e)
   }
 }
 
