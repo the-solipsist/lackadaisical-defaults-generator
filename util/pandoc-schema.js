@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable quotes */
 /**
  *
  * BEGIN HEADER
@@ -15,247 +16,294 @@
 
 // JSONSchema for revalidator
 const schema = {
-  properties: {
-    'input-file': {
-      type: 'string'
+  "properties":{
+    "input-file":{
+      "type":"string"
     },
-    'input-files': {
-      type: 'array'
+    "input-files":{
+      "type":"array"
     },
-    reader: {
-      type: 'string'
+    "reader":{
+      "type":"string"
     },
-    writer: {
-      type: 'string'
+    "writer":{
+      "type":"string"
     },
-    'output-file': {
-      type: 'string'
+    "output-file":{
+      "type":"string"
     },
-    'data-dir': {
-      type: 'string'
+    "data-dir":{
+      "type":"string"
     },
-    'metadata-files': {
-      type: 'array'
+    "metadata-files":{
+      "type":"array"
     },
-    'file-scope': {
-      type: 'boolean'
+    "file-scope":{
+      "type":"boolean"
     },
-    standalone: {
-      type: 'boolean'
+    "standalone":{
+      "type":"boolean"
     },
-    template: {
-      type: 'string'
+    "template":{
+      "type":"string"
     },
-    variables: {
-      type: ['object','boolean']
+    "variables":{
+      "type":[
+        "object",
+        "boolean"
+      ]
     },
-    wrap: {
-      type: 'string',
-      enum: ['auto', 'none', 'preserve']
+    "wrap":{
+      "type":"string",
+      "enum":[
+        "auto",
+        "none",
+        "preserve"
+      ]
     },
-    ascii: {
-      type: 'boolean'
+    "ascii":{
+      "type":"boolean"
     },
-    toc: {
-      type: 'boolean'
+    "toc":{
+      "type":"boolean"
     },
-    'toc-depth': {
-      maximum: 5,
-      minimum: 1,
-      type: 'number'
+    "toc-depth":{
+      "maximum":5,
+      "minimum":1,
+      "type":"number"
     },
-    'number-sections': {
-      type: 'boolean'
+    "number-sections":{
+      "type":"boolean"
     },
-    'number-offset': {
-      type: 'array' // of numbers
+    "number-offset":{
+      "type":"array"
     },
-    'top-level-division:': {
-      type: 'string',
-      enum: ['default','section','chapter','part']
+    "top-level-division:":{
+      "type":"string",
+      "enum":[
+        "default",
+        "section",
+        "chapter",
+        "part"
+      ]
     },
-    'extract-media': {
-      type: 'string'
+    "extract-media":{
+      "type":"string"
     },
-    'resource-path': {
-      type: 'array'
+    "resource-path":{
+      "type":"array"
     },
-    'include-in-header': {
-      type: 'string'
+    "include-in-header":{
+      "type":"string"
     },
-    'include-after-body': {
-      type: 'string'
+    "include-after-body":{
+      "type":"string"
     },
-    'include-before-body': {
-      type: 'string'
+    "include-before-body":{
+      "type":"string"
     },
-    'highlight-style': {
-      type: 'string' // There are enumerated values, but it can also be a path to a json file.
+    "highlight-style":{
+      "type":"string"
     },
-    'syntax-definitions': {
-      type: 'array'
+    "syntax-definitions":{
+      "type":"array"
     },
-    dpi: {
-      type: 'number'
+    "dpi":{
+      "type":"number"
     },
-    eol: {
-      type: 'string',
-      enum: ['lf', 'crlf', 'native']
+    "eol":{
+      "type":"string",
+      "enum":[
+        "lf",
+        "crlf",
+        "native"
+      ]
     },
-    columns: {
-      type: 'number'
+    "columns":{
+      "type":"number"
     },
-    'preserve-tabs': {
-      type: 'boolean'
+    "preserve-tabs":{
+      "type":"boolean"
     },
-    'tab-stop': {
-      type: 'boolean'
+    "tab-stop":{
+      "type":"boolean"
     },
-    'pdf-engine': {
-      enum: ['pdflatex', 'xelatex', 'lualatex', 'tectonic', 'latexmk'],
-      type: 'string'
+    "pdf-engine":{
+      "enum":[
+        "pdflatex",
+        "xelatex",
+        "lualatex",
+        "tectonic",
+        "latexmk"
+      ],
+      "type":"string"
     },
-    'pdf-engine-opts': {
-      type: 'array'
+    "pdf-engine-opts":{
+      "type":"array"
     },
-    'reference-doc': {
-      type: 'string'
+    "reference-doc":{
+      "type":"string"
     },
-    'self-contained': {
-      type: 'boolean'
+    "self-contained":{
+      "type":"boolean"
     },
-    'request-headers': {
-      type: 'array'
+    "request-headers":{
+      "type":"array"
     },
-    abbreviations: {
-      type: 'string'
+    "abbreviations":{
+      "type":"string"
     },
-    'indented-code-classes': {
-      type: 'array'
+    "indented-code-classes":{
+      "type":"array"
     },
-    'default-image-extension': {
-      minLength: 3,
-      maxLength: 5,
-      type: 'string'
+    "default-image-extension":{
+      "minLength":3,
+      "maxLength":5,
+      "type":"string"
     },
-    filters: {
-      type: 'array'
+    "filters":{
+      "type":"array"
     },
-    'cite-method': {
-      type: 'string',
-      enum: ['citeproc', 'natbib', 'biblatex']
+    "cite-method":{
+      "type":"string",
+      "enum":[
+        "citeproc",
+        "natbib",
+        "biblatex"
+      ]
     },
-    'shift-heading-level-by': {
-      type: 'number'
+    "shift-heading-level-by":{
+      "type":"number"
     },
-    'track-changes': {
-      type: 'string',
-      enum: ['accept', 'reject', 'all']
+    "track-changes":{
+      "type":"string",
+      "enum":[
+        "accept",
+        "reject",
+        "all"
+      ]
     },
-    'strip-comments': {
-      type: 'boolean'
+    "strip-comments":{
+      "type":"boolean"
     },
-    'reference-links': {
-      type: 'boolean'
+    "reference-links":{
+      "type":"boolean"
     },
-    'reference-location': {
-      type: 'string'
+    "reference-location":{
+      "type":"string"
     },
-    'atx-headers': {
-      type: 'boolean'
+    "atx-headers":{
+      "type":"boolean"
     },
-    'listings': {
-      type: 'boolean'
+    "listings":{
+      "type":"boolean"
     },
-    'incremental': {
-      type: 'boolean'
+    "incremental":{
+      "type":"boolean"
     },
-    'slide-level': {
-      maximum: 5,
-      minimum: 1,
-      type: 'number'
+    "slide-level":{
+      "maximum":5,
+      "minimum":1,
+      "type":"number"
     },
-    'section-divs': {
-      type: 'boolean'
+    "section-divs":{
+      "type":"boolean"
     },
-    'html-q-tags': {
-      type: 'boolean'
+    "html-q-tags":{
+      "type":"boolean"
     },
-    'email-obfuscation': {
-      enum: ['none', 'javascript', 'references'],
-      type: 'string'
+    "email-obfuscation":{
+      "enum":[
+        "none",
+        "javascript",
+        "references"
+      ],
+      "type":"string"
     },
-    'identifier-prefix': {
-      type: 'string'
+    "identifier-prefix":{
+      "type":"string"
     },
-    'title-prefix': {
-      type: 'string'
+    "title-prefix":{
+      "type":"string"
     },
-    'css' : {
-      format: 'url',
-      type: 'string'
+    "css":{
+      "format":"url",
+      "type":"string"
     },
-    'epub-subdirectory': {
-      type: 'string'
+    "epub-subdirectory":{
+      "type":"string"
     },
-    'epub-cover-image': {
-      type: 'string'
+    "epub-cover-image":{
+      "type":"string"
     },
-    'epub-metadata': {
-      type: 'string'
+    "epub-metadata":{
+      "type":"string"
     },
-    'epub-fonts': {
-      type: 'array'
+    "epub-fonts":{
+      "type":"array"
     },
-    'epub-chapter-level': {
-      maximum: 5,
-      minimum: 1,
-      type: 'number'
+    "epub-chapter-level":{
+      "maximum":5,
+      "minimum":1,
+      "type":"number"
     },
-    'inypb-output': {
-      enum: ['all','none','best'],
-      type: 'string'
+    "inypb-output":{
+      "enum":[
+        "all",
+        "none",
+        "best"
+      ],
+      "type":"string"
     },
-    metadata: {
-      type: 'object',
-      'bibliography': {
-        type: 'string'
+    "metadata":{
+      "type":"object",
+      "bibliography":{
+        "type":"string"
       },
-      'csl': {
-        type: 'string'
+      "csl":{
+        "type":"string"
       },
-      'citation-abbreviations': {
-        type: 'string'
+      "citation-abbreviations":{
+        "type":"string"
       }
     },
-    'html-math-method': {
-      method: {
-        enum: ['mathjax', 'katex', 'gladtex', 'mathml'],
-        type: 'string',
+    "html-math-method":{
+      "method":{
+        "enum":[
+          "mathjax",
+          "katex",
+          "gladtex",
+          "mathml"
+        ],
+        "type":"string"
       },
-      url: {
-        type: 'string',
-        format: 'url'
+      "url":{
+        "type":"string",
+        "format":"url"
       }
     },
-    'trace': {
-      type: 'boolean'
+    "trace":{
+      "type":"boolean"
     },
-    'dump-args': {
-      type: 'boolean'
+    "dump-args":{
+      "type":"boolean"
     },
-    'ignore-args': {
-      type: 'boolean'
+    "ignore-args":{
+      "type":"boolean"
     },
-    'verbosity': {
-      enum: ['INFO', 'ERROR'],
-      type: 'string'
+    "verbosity":{
+      "enum":[
+        "INFO",
+        "WARNING",
+        "ERROR"
+      ],
+      "type":"string"
     },
-    'fail-if-warnings': {
-      type: 'boolean'
+    "fail-if-warnings":{
+      "type":"boolean"
     },
-    'log-file': {
-      type: 'string'
+    "log-file":{
+      "type":"string"
     }
   }
 }

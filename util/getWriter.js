@@ -3,12 +3,12 @@
  *
  * BEGIN HEADER
  *
- * Contains:        Get Writer function
- * CVM-Role:        <none>
- * Maintainer:      Matt Jolly
- * License:         GNU GPL v3
+ * Contains:    Get Writer function
+ * CVM-Role:    <none>
+ * Maintainer:  Matt Jolly
+ * License:     GNU GPL v3
  *
- * Description:     This function determines and returns the pandoc writer to invoke.
+ * Description: This function determines and returns the pandoc writer to invoke.
  *
  * END HEADER
  */
@@ -18,8 +18,8 @@
  *
  *  Based on Text.Pandoc.App.FormatHeuristics
  *
- * @param   {string}    extension     File extension that we want a writer for.
- * @returns {string}    writer        The pandoc writer for this file extension.
+ * @param   {string}  extension   File extension that we want a writer for.
+ * @returns {string}  writer    The pandoc writer for this file extension.
  */
 export default function getWriter(extension) {
   let writer
@@ -69,7 +69,7 @@ export default function getWriter(extension) {
   case '.ipynb': writer = 'ipynb'; break
   case '.csv': writer = 'csv'; break
   case '.bib': writer = 'biblatex'; break
-  case /\.[1-9]{1,4}/.test(extension): writer = 'man'; break
+  case /\.[1-9]{1}/.test(extension): writer = 'man'; break
   default: writer = null; break
   }
   return writer
