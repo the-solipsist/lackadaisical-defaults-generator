@@ -46,7 +46,6 @@ function isDefaultProperty(property) {
  *
  */
 function validateFrontmatter(frontmatter) {
-  // this would be a one-liner in the main function if we didn't have special cases to validate...
   let validated = revalidator.validate(frontmatter, schema)
 
   if (validated.errors.length > 0) {
@@ -86,15 +85,15 @@ export default function makeDefaultsFile (frontmatter, outputFile = null, writer
 
   }
 
-  // Maybe we don't want to let the user set **all** of the variables directly.
+  // if we explicitly passed outputFile to the function we'll assume that it should take precedence.
   if (outputFile) {
     defaultsFileContents['output-file'] = path.resolve(outputFile).toString // probably a better way to do this
   }
 
   if (writer) {
     defaultsFileContents['writer'] = writer
-  } else if (outputFile) {
-    defaultsFileContents['writer'] = (getWriter(path.extname(outputFile)) === null) ? '' : getWriter(path.extname(outputFile))
+  } else if (Object.prototype.hasOwnProperty.call(defaultsFileContents, 'output-file')) {
+    defaultsFileContents['writer'] = (getWriter(path.extname(defaultsFileContents['output-file'])) === null) ? '' : getWriter(path.extname(defaultsFileContents['output-file']))
   }
 
   // May as well make sure that we're sending back valid JSON.
@@ -103,6 +102,3 @@ export default function makeDefaultsFile (frontmatter, outputFile = null, writer
   return defaultsFileContents
 
 }
-
-
-
