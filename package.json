@@ -5,9 +5,10 @@
   "main": "index.js",
   "repository": "https://github.com/Lackadaisical-Documentation-Generator/Lackadaisical-Defaults-Generator",
   "author": "Matt Jolly <Kangie@footclan.ninja>",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "private": false,
   "devDependencies": {
-    "eslint": "^7.17.0"
+    "eslint": "^7.17.0",
+    "eslint-plugin-jsdoc": "^31.0.3"
   }
 }
