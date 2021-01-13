@@ -8,11 +8,11 @@ import fs from 'fs'
 import path from 'path'
 import revalidator from 'revalidator'
 
-import makeDefaultsFile from '../index.js'
+import makeDefaultsFile from './index.js'
 
-import { validateFrontmatter } from '../index.js'
-import { isDefaultProperty } from '../index.js'
-import getWriter from '../util/getWriter.js'
+import { validateFrontmatter } from './index.js'
+import { isDefaultProperty } from './index.js'
+import getWriter from './util/getWriter.js'
 
 process.chdir('./test')
 
