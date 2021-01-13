@@ -22,19 +22,20 @@ import getWriter from './util/getWriter.js'
 /**
  *  Function to determine if a property is a default 'defaults' property.
  *
- * @param   {object}  property    File extension that we want a writer for.
+ * @param   {string}  property    Property that we want to know aboutr.
  *
- * @returns {boolean}   hasProperty   The pandoc writer for this file extension.
+ * @returns {boolean} hasProperty   The pandoc writer for this file extension.
  */
 export function isDefaultProperty(property) {
   // Check if the property appears in the schema. If it's there, it's a default property!
   // Special Cases: If 'bibliogrpahy', 'csl', or 'citation-abbreviations' is found in root,
   // validate against and write to schema.metadata.property.
   let hasProperty
+  // I am not convinced that these special cases are correct. Rip this out depending on info from pandoc.
   if (!(property === 'bibliogrpahy' || property === 'csl' || property === 'citation-abbreviations')) {
-    hasProperty = Object.prototype.hasOwnProperty.call(schema, property) ? true : false
+    hasProperty = Object.prototype.hasOwnProperty.call(schema.properties, property) ? true : false
   } else {
-    hasProperty =  Object.prototype.hasOwnProperty.call(schema.metadata, property) ? true : false
+    hasProperty =  Object.prototype.hasOwnProperty.call(schema.properties.metadata, property) ? true : false
   }
   return hasProperty
 }
@@ -50,9 +51,8 @@ export function validateFrontmatter(frontmatter) {
     let validated = revalidator.validate(frontmatter, schema)
 
     if (validated.errors.length > 0) {
-      console.error('Frontmatter failed validation.')
       console.error(validated.errors) // Todo: This would be nicer if we parsed it so that it was human readable.
-      throw `Frontmatter validation returned errors ${validated.errors}`
+      throw 'Frontmatter validation returned errors.'
     }
   } catch (e) {
     console.error(e)
@@ -63,8 +63,8 @@ export function validateFrontmatter(frontmatter) {
  *  Function to provide the content for a pandoc defaults file from frontmatter input.
  *
  * @param  {object}  frontmatter  Frontmatter that we want to add to the defaults file.
- * @param  {object}  outputFile   Output file to configure writer
- * @param  {writer}  writer       Pandoc writer to use if you don't want the tool to try and work it out automagically.
+ * @param  {string}  outputFile   Output file to configure writer
+ * @param  {string}  writer       Pandoc writer to use if you don't want the tool to try and work it out automagically.
  *
  * @returns {object} defaultsFileContents   The contents of a defaults file to do what you will with.
  */
@@ -74,16 +74,17 @@ export default function makeDefaultsFile (frontmatter, outputFile = null, writer
 
   validateFrontmatter(frontmatter) // Provide user with feedback so they can amend frontmatter values before we really do anything.
 
-  let defaultsFileContents
+  let defaultsFileContents = {}
 
-  for (const property in frontmatter) {
+  for (const [property,value] of Object.entries(frontmatter)) {
+    console.error(property)
 
     if (isDefaultProperty(property)) {
-      defaultsFileContents[property] = frontmatter[property] // Properties should already have been validated, so just pass to the object.
+      defaultsFileContents[`${property}`] = value // Properties should already have been validated, so just pass to the object.
     } else {
-    // Using metadata here because values are escaped by pandoc.
+    // Using metadata here because values are escaped by pandoc. Are there properties that shouldn't be escaped?
     // Add special case handling if something arbitrary (i.e. template stuff) *needs* to be a variable.
-      defaultsFileContents.metadata[property] = frontmatter[property]
+      defaultsFileContents.metadata[property] = value
       // These can't be validated against the schema, hope the input was validated externally!
     }
 

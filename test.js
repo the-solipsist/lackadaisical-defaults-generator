@@ -14,6 +14,7 @@ import { validateFrontmatter } from './index.js'
 import { isDefaultProperty } from './index.js'
 import getWriter from './util/getWriter.js'
 
+// eslint-disable-next-line no-undef
 process.chdir('./test')
 
 test('Valid Pandoc defaults file passes JSONSchema validation', async t => {
