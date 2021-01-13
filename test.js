@@ -143,7 +143,7 @@ test('makeDefaultsFile throws an error with invalid input', t => {
   })
 })
 
-test.todo('makeDefaultsFile returns appropriate writer when presented with output-file', t => {
+test('makeDefaultsFile returns appropriate writer when presented with output-file', t => {
   let fileContents = fs.readFileSync('./output-file.yaml', 'utf-8')
   let frontmatter = yaml.safeLoad(fileContents)
   const schema = {
@@ -164,3 +164,6 @@ test.todo('makeDefaultsFile returns appropriate writer when presented with outpu
   const validated = revalidator.validate(defaultsFile, schema)
   t.true(validated.errors.length === 0)
 })
+
+test.todo('Invalid writer fails schema')
+test.todo('valid writer passes schema')

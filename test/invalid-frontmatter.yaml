@@ -11,4 +11,6 @@ table-row-highlighting: true
 toc: true
 slide-level: 2
 
----
+top-level-division: obvious failure
+
+default-image-extension: 0

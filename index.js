@@ -16,7 +16,7 @@
 import revalidator from 'revalidator'
 import path from 'path'
 
-import { schema } from './util/pandoc-schema.js'
+import schema  from './util/pandoc-schema.js'
 import getWriter from './util/getWriter.js'
 
 /**
@@ -26,7 +26,7 @@ import getWriter from './util/getWriter.js'
  *
  * @returns {boolean}   hasProperty   The pandoc writer for this file extension.
  */
-function isDefaultProperty(property) {
+export function isDefaultProperty(property) {
   // Check if the property appears in the schema. If it's there, it's a default property!
   // Special Cases: If 'bibliogrpahy', 'csl', or 'citation-abbreviations' is found in root,
   // validate against and write to schema.metadata.property.
@@ -45,7 +45,7 @@ function isDefaultProperty(property) {
  * @param   {object}  frontmatter    File extension that we want a writer for.
  *
  */
-function validateFrontmatter(frontmatter) {
+export function validateFrontmatter(frontmatter) {
   try {
     let validated = revalidator.validate(frontmatter, schema)
 

@@ -14,6 +14,104 @@
  * END HEADER
  */
 
+// pandoc 2.9.2.1
+const readers = [
+  'asciidoc',
+  'asciidoctor',
+  'beamer',
+  'commonmark',
+  'context',
+  'docbook',
+  'docbook4',
+  'docbook5',
+  'docx',
+  'dokuwiki',
+  'dzslides',
+  'epub',
+  'epub2',
+  'epub3',
+  'fb2',
+  'gfm',
+  'haddock',
+  'html',
+  'html4',
+  'html5',
+  'icml',
+  'ipynb',
+  'jats',
+  'jats_archiving',
+  'jats_articleauthoring',
+  'jats_publishing',
+  'jira',
+  'json',
+  'latex',
+  'man',
+  'markdown',
+  'markdown_github',
+  'markdown_mmd',
+  'markdown_phpextra',
+  'markdown_strict',
+  'mediawiki',
+  'ms',
+  'muse',
+  'native',
+  'odt',
+  'opendocument',
+  'opml',
+  'org',
+  'pdf',
+  'plain',
+  'pptx',
+  'revealjs',
+  'rst',
+  'rtf',
+  's5',
+  'slideous',
+  'slidy',
+  'tei',
+  'texinfo',
+  'textile',
+  'xwiki',
+  'zimwiki'
+]
+
+const writers = [
+  'commonmark',
+  'creole',
+  'csv',
+  'docbook',
+  'docx',
+  'dokuwiki',
+  'epub',
+  'fb2',
+  'gfm',
+  'haddock',
+  'html',
+  'ipynb',
+  'jats',
+  'jira',
+  'json',
+  'latex',
+  'man',
+  'markdown',
+  'markdown_github',
+  'markdown_mmd',
+  'markdown_phpextra',
+  'markdown_strict',
+  'mediawiki',
+  'muse',
+  'native',
+  'odt',
+  'opml',
+  'org',
+  'rst',
+  't2t',
+  'textile',
+  'tikiwiki',
+  'twiki',
+  'vimwiki'
+]
+
 // JSONSchema for revalidator
 const schema = {
   "properties":{
@@ -24,10 +122,12 @@ const schema = {
       "type":"array"
     },
     "reader":{
-      "type":"string"
+      "type":"string",
+      "enum": readers
     },
     "writer":{
-      "type":"string"
+      "type":"string",
+      "enum": writers
     },
     "output-file":{
       "type":"string"
@@ -94,13 +194,13 @@ const schema = {
       "type":"array"
     },
     "include-in-header":{
-      "type":"string"
+      "type":"array"
     },
     "include-after-body":{
-      "type":"string"
+      "type":"array"
     },
     "include-before-body":{
-      "type":"string"
+      "type":"array"
     },
     "highlight-style":{
       "type":"string"
@@ -126,7 +226,7 @@ const schema = {
       "type":"boolean"
     },
     "tab-stop":{
-      "type":"boolean"
+      "type":"number"
     },
     "pdf-engine":{
       "enum":[
@@ -228,7 +328,7 @@ const schema = {
     },
     "css":{
       "format":"url",
-      "type":"string"
+      "type":"array"
     },
     "epub-subdirectory":{
       "type":"string"
