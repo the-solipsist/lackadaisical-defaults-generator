@@ -112,7 +112,13 @@ const writers = [
   'vimwiki'
 ]
 
-// JSONSchema for revalidator
+/*
+* JSONSchema for revalidator
+* Informed by https://github.com/jgm/pandoc/issues/5990 and the pandoc manual.
+* Thanks to:
+* John MacFarlane https://github.com/jgm
+* Carsten Allefeld https://github.com/allefeld
+*/
 const schema = {
   "properties":{
     "input-file":{
@@ -358,7 +364,10 @@ const schema = {
     "metadata":{
       "type":"object",
       "bibliography":{
-        "type":"string"
+        "type":[
+          "string",
+          "array"
+        ]
       },
       "csl":{
         "type":"string"
@@ -404,8 +413,21 @@ const schema = {
     },
     "log-file":{
       "type":"string"
+    },
+    "bibliography":{
+      "type":[
+        "string",
+        "array"
+      ]
+    },
+    "csl":{
+      "type":"string"
+    },
+    "citation-abbreviations":{
+      "type":"string"
     }
   }
 }
 
 export default schema
+
