@@ -14,85 +14,70 @@ import getWriter from '../util/getWriter.js'
 process.chdir('./test')
 
 test('Valid Pandoc defaults file passes JSONSchema validation', async t => {
-  try {
     let fileContents = fs.readFileSync('./defaults.yaml', 'utf-8')
     let data = yaml.safeLoad(fileContents)
 
     const validated = validateFrontmatter(data)
-    t.fail()
-  } catch (error) {
     t.false(validated.errors.length > 0)
-  }
 })
 
 test('getWriter returns correct value for PDF', async t => {
-  try {
+
     // Simulate a real filename and snip the extension like we would in the main function
     let fileext = path.extname('/test/path/to/file.pdf')
     writer = getWriter(fileext)
     t.fail()
-  } catch (error) {
-    t.true(writer === 'pdf')
-  }
-})
 
-test('getWriter returns correct value for PDF', async t => {
-  try {
-    // Simulate a real filename and snip the extension like we would in the main function
-    let fileext = path.extname('/test/path/to/file.pdf')
-    writer = getWriter(fileext)
-    t.fail()
-  } catch (error) {
     t.true(writer === 'pdf')
   }
 })
 
 test('getWriter returns correct value for HTML', async t => {
-  try {
+
     // Simulate a real filename and snip the extension like we would in the main function
     let fileext = path.extname('/test/path/to/file.html')
     writer = getWriter(fileext)
     t.fail()
-  } catch (error) {
+
     t.true(writer === 'html')
   }
 })
 
 test('getWriter returns correct value for DOCX', async t => {
-  try {
+
     // Simulate a real filename and snip the extension like we would in the main function
     let fileext = path.extname('/test/path/to/file.docx')
     writer = getWriter(fileext)
     t.fail()
-  } catch (error) {
+
     t.true(writer === 'docx')
   }
 })
 
 test('getWriter returns correct value for PPTX', async t => {
-  try {
+
     // Simulate a real filename and snip the extension like we would in the main function
     let fileext = path.extname('/test/path/to/file.pptx')
     writer = getWriter(fileext)
     t.fail()
-  } catch (error) {
+
     t.true(writer === 'pptx')
   }
 })
 
 test('getWriter returns null for unknown format', async t => {
-  try {
+
     // Simulate a real filename and snip the extension like we would in the main function
     let fileext = path.extname('/test/path/to/file.potato')
-    writer = getWriter(fileext)
+    let writer = getWriter(fileext)
     t.fail()
-  } catch (error) {
+
     t.true(writer === null)
   }
 })
 
 test('isDefaultProperty returns true for default properties', async t => {
-  try {
+
 
   }
 })
