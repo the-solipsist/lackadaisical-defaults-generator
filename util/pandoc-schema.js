@@ -247,6 +247,9 @@ const schema = {
     "pdf-engine-opts":{
       "type":"array"
     },
+    "pdf-engine-opt":{
+      "type":"string"
+    },
     "reference-doc":{
       "type":"string"
     },

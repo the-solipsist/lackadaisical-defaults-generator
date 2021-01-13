@@ -19,6 +19,7 @@
  *  Based on Text.Pandoc.App.FormatHeuristics
  *
  * @param   {string}  extension   File extension that we want a writer for.
+ *
  * @returns {string}  writer    The pandoc writer for this file extension.
  */
 export default function getWriter(extension) {
