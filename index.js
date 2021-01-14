@@ -101,7 +101,7 @@ export default function makeDefaultsFile (frontmatter, { outputFile = null, writ
   // Iterate over object's properties; if in defaults make root object in output yaml.
   // If not in defaults, add to output.metadata as output.metadata.name
   validateFrontmatter(frontmatter)
-  let defaultsFileContents = Object.assign(processProperties(frontmatter), processProperties(customMetadata))
+  let defaultsFileContents = customMetadata ? Object.assign(processProperties(customMetadata), processProperties(frontmatter)) : processProperties(frontmatter)
 
 
   // if we explicitly passed outputFile to the function we'll assume that it should take precedence.

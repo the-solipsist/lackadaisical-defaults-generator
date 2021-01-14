@@ -344,5 +344,44 @@ test('Explicit writer passed to makeDefaultsFile overrides yaml input', async t 
   t.true(validated.errors.length == 0)
 })
 
-test.todo('Custom metadata objects are accepted')
-test.todo('Custom metadata values are overridden by in-document values')
+test('Custom metadata objects are accepted', async t => {
+  const data = {
+    customMetadata: {
+      title: 'Custom Metadata Title'
+    }
+  }
+  const outputSchema = {
+    properties: {
+      metadata: {
+        'title': {
+          type: 'string',
+          enum: ['Custom Metadata Title'],
+          required: true
+        }
+      }
+    }
+  }
+  const validated = revalidator.validate(makeDefaultsFile({}, data), outputSchema)
+  t.true(validated.errors.length == 0)
+})
+
+test('Custom metadata values are overridden by in-document values', async t => {
+  const data = {
+    customMetadata: {
+      title: 'Custom Metadata Title'
+    }
+  }
+  const outputSchema = {
+    properties: {
+      metadata: {
+        'title': {
+          type: 'string',
+          enum: ['Standard Title'],
+          required: true
+        }
+      }
+    }
+  }
+  const validated = revalidator.validate(makeDefaultsFile({title: 'Standard Title'}, data), outputSchema)
+  t.true(validated.errors.length == 0)
+})
