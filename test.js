@@ -67,16 +67,13 @@ test('getWriter returns null for unknown format', async t => {
 })
 
 test('isDefaultProperty returns true for default properties', async t => {
-  const property = {
-    'output-file': '/path/to/fake/file.pdf'
-  }
+  const property = 'output-file'
   t.true(isDefaultProperty(property))
 })
 
+
 test('isDefaultProperty returns false for custom properties',  async t => {
-  const property = {
-    'title': 'Example Title'
-  }
+  const property = 'title'
   t.false(isDefaultProperty(property))
 })
 
@@ -181,7 +178,6 @@ test('processProperties places default value in root of object', t=> {
   }
 
   const validated = revalidator.validate(processProperties(property), schema)
-  console.error(processProperties(property))
   t.true(validated.errors.length == 0)
 })
 
@@ -224,6 +220,7 @@ test('processProperties places custom property in object.metadata', t=> {
   const validated = revalidator.validate(processProperties(property), schema)
   t.true(validated.errors.length == 0)
 })
+
 
 test.todo('Invalid writer fails schema')
 test.todo('valid writer passes schema')

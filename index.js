@@ -22,12 +22,13 @@ import getWriter from './util/getWriter.js'
 /**
  *  Function to determine if a property is a default 'defaults' property.
  *
- * @param   {object}  property    Property that we want to know about.
+ * @param   {string}  property    Property that we want to know about.
  *
  * @returns {boolean} Whether or not this is a default property.
  */
 export function isDefaultProperty(property) {
-  return Object.prototype.hasOwnProperty.call(schema.properties, Object.keys(property)) ? true : false
+  //console.error(property, Object.keys(property), Object.prototype.hasOwnProperty.call(schema.properties, Object.keys(property)))
+  return Object.prototype.hasOwnProperty.call(schema.properties, property) ? true : false
 }
 
 /**
@@ -42,16 +43,24 @@ export function processProperties(properties) {
     metadata: {}
   }
 
-  for (const property in properties) {
+  for (let [key, value] of Object.entries(properties)) {
     // Check if the property appears in the schema. If it's there, it's a default property!
     // Special Cases: If 'bibliogrpahy', 'csl', or 'citation-abbreviations' is found in root,
     // write to schema.metadata.property. That's what settting them in the root does in the end and it's more explicit.
-    if (isDefaultProperty(property) && (!(Object.keys(property) === ('bibliogrpahy' || 'csl' || 'citation-abbreviations')))) {
-      processedProperties[property] = properties[property]
+    if (key === 'metadata') {
+      for (let [metadataKey, metadataValue] of Object.entries(value)) {
+        processedProperties.metadata[metadataKey] = metadataValue
+      }
+    } else if (key === 'variable') {
+      for (let [variableKey, variableValue] of Object.entries(value)) {
+        processedProperties.metadata[variableKey] = variableValue
+      }
+    } else if (isDefaultProperty(key) && (!(key === ('bibliogrpahy' || 'csl' || 'citation-abbreviations')))) {
+      processedProperties[key] = value
     } else {
       // Using metadata here because values are escaped by pandoc. Are there properties that shouldn't be escaped?
       // Add special case handling if something arbitrary (i.e. template stuff) *needs* to be a variable.
-      processedProperties.metadata[property] = property[property]
+      processedProperties.metadata[key] = value
       // These can't be validated against the schema, hope the input was validated externally!
     }
   }
@@ -91,6 +100,7 @@ export default function makeDefaultsFile (frontmatter, outputFile = null, writer
   // If not in defaults, add to output.metadata as output.metadata.name
 
   validateFrontmatter(frontmatter)
+  console.error(frontmatter)
   let defaultsFileContents = processProperties(frontmatter)
 
 
