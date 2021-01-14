@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 /**
- * @ignore
  * BEGIN HEADER
  *
  * Contains:    Create Defaults File command
@@ -27,7 +26,6 @@ import getWriter from './util/getWriter.js'
  * @returns {boolean} Whether or not this is a default property.
  */
 export function isDefaultProperty(property) {
-  //console.error(property, Object.keys(property), Object.prototype.hasOwnProperty.call(schema.properties, Object.keys(property)))
   return Object.prototype.hasOwnProperty.call(schema.properties, property) ? true : false
 }
 
@@ -99,9 +97,7 @@ export default function makeDefaultsFile (frontmatter, outputFile = null, writer
   // Iterate over object's properties; if in defaults make root object in output yaml.
   // If not in defaults, add to output.metadata as output.metadata.name
   validateFrontmatter(frontmatter)
-  console.error(frontmatter)
   let defaultsFileContents = processProperties(frontmatter)
-  console.error('defaults contents', defaultsFileContents)
 
 
   // if we explicitly passed outputFile to the function we'll assume that it should take precedence.
@@ -114,11 +110,9 @@ export default function makeDefaultsFile (frontmatter, outputFile = null, writer
   } else if (Object.prototype.hasOwnProperty.call(defaultsFileContents, 'output-file')) {
     defaultsFileContents['writer'] = (getWriter(path.extname(defaultsFileContents['output-file'])) === null) ? '' : getWriter(path.extname(defaultsFileContents['output-file']))
   }
-  console.error('defaults contents before validator', defaultsFileContents)
   // May as well make sure that we're sending back valid JSON.
   try {
     let validated = revalidator.validate(defaultsFileContents, schema)
-    console.error('validated before return', validated)
     if (validated.errors.length > 0) {
       console.error(validated.errors) // Todo: This would be nicer if we parsed it so that it was human readable.
       throw 'Defaults file output validation returned errors.'

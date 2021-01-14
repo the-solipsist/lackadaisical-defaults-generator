@@ -224,7 +224,90 @@ test('processProperties places custom property in object.metadata', t=> {
   t.true(validated.errors.length == 0)
 })
 
+test('Invalid writer fails schema validation', async t => {
+  const data = {
+    writer: 'not-a-real-writer'
+  }
+  const error = t.throws(() => {
+    makeDefaultsFile(data),
+    t.is(error.message, 'Frontmatter validation returned errors.')
+  })
+})
 
-test.todo('Invalid writer fails schema')
-test.todo('valid writer passes schema')
-test.todo('Spaces in content are preserved')
+test('Valid writer passes schema validation', async t => {
+  const data = {
+    writer: 'html'
+  }
+  t.notThrows(() => {
+    makeDefaultsFile(data),
+    'Frontmatter validation returned errors.'
+  })
+})
+
+test('Invalid reader fails schema validation', async t => {
+  const data = {
+    reader: 'not-a-real-reader'
+  }
+  const error = t.throws(() => {
+    makeDefaultsFile(data),
+    t.is(error.message, 'Frontmatter validation returned errors.')
+  })
+})
+
+test('Valid reader passes schema validation', async t => {
+  const data = {
+    reader: 'html'
+  }
+  t.notThrows(() => {
+    makeDefaultsFile(data),
+    'Frontmatter validation returned errors.'
+  })
+})
+
+test('variables are placed in output object correctly', async t => {
+  const data = {
+    variable: {
+      'test-variable': 'test variable'
+    }
+  }
+  const schema = {
+    properties: {
+      metadata: {
+        'test-variable': {
+          type: 'string',
+          enum: ['test variable'],
+          required: true
+        }
+      }
+    }
+  }
+
+  const validated = revalidator.validate(makeDefaultsFile(data), schema)
+  t.true(validated.errors.length == 0)
+})
+
+
+test('Explicit metadata is placed in output object correctly', async t => {
+  const data = {
+    metadata: {
+      'test-metadata': 'test metadata'
+    }
+  }
+  const schema = {
+    properties: {
+      metadata: {
+        'test-metadata': {
+          type: 'string',
+          enum: ['test-variable'],
+          required: true
+        }
+      }
+    }
+  }
+
+  const validated = revalidator.validate(makeDefaultsFile(data), schema)
+  t.true(validated.errors.length == 0)
+})
+
+test.todo('Explicit outputFile passed to makeDefaultsFile overrides yaml input')
+test.todo('Explicit writer passed to makeDefaultsFile overrides yaml input')
