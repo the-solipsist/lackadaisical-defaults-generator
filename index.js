@@ -93,7 +93,7 @@ export function validateFrontmatter(frontmatter) {
  *
  * @returns {object} defaultsFileContents   The contents of a defaults file to do what you will with.
  */
-export default function makeDefaultsFile (frontmatter, outputFile = null, writer = null) {
+export default function makeDefaultsFile (frontmatter, { outputFile = null, writer = null } = {} ) {
   // Iterate over object's properties; if in defaults make root object in output yaml.
   // If not in defaults, add to output.metadata as output.metadata.name
   validateFrontmatter(frontmatter)

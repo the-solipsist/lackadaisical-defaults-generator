@@ -309,5 +309,37 @@ test('Explicit metadata is placed in output object correctly', async t => {
   t.true(validated.errors.length == 0)
 })
 
-test.todo('Explicit outputFile passed to makeDefaultsFile overrides yaml input')
-test.todo('Explicit writer passed to makeDefaultsFile overrides yaml input')
+test('Explicit outputFile passed to makeDefaultsFile overrides yaml input', async t => {
+  const output = '../output.pdf'
+  const data = {
+    'output-file': 'user specified'
+  }
+  const schema = {
+    properties: {
+      'output-file': {
+        type: 'string',
+        enum: [path.resolve(output)],
+        required: true
+      }
+    }
+  }
+  const validated = revalidator.validate(makeDefaultsFile(data, {outputFile: path.resolve(output)}), schema)
+  t.true(validated.errors.length == 0)
+})
+
+test('Explicit writer passed to makeDefaultsFile overrides yaml input', async t => {
+  const data = {
+    'writer': 'pdf'
+  }
+  const schema = {
+    properties: {
+      'writer': {
+        type: 'string',
+        enum: ['html'],
+        required: true
+      }
+    }
+  }
+  const validated = revalidator.validate(makeDefaultsFile(data, {writer: 'html'}), schema)
+  t.true(validated.errors.length == 0)
+})
