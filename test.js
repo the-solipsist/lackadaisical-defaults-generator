@@ -343,3 +343,6 @@ test('Explicit writer passed to makeDefaultsFile overrides yaml input', async t 
   const validated = revalidator.validate(makeDefaultsFile(data, {writer: 'html'}), schema)
   t.true(validated.errors.length == 0)
 })
+
+test.todo('Custom metadata objects are accepted')
+test.todo('Custom metadata values are overridden by in-document values')

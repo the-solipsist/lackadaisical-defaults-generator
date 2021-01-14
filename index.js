@@ -89,18 +89,19 @@ export function validateFrontmatter(frontmatter) {
  *
  *  Function to provide the content for a pandoc defaults file from frontmatter input.
  *
- * @param  {object}  frontmatter    Frontmatter that we want to add to the defaults file.
- * @param  {object}  {}             Optional params Object
- * @param  {string}  {}.outputFile  Output file to configure writer
- * @param  {string}  {}.writer      Pandoc writer to use if you don't want the tool to try and work it out automagically.
+ * @param  {object}  frontmatter        Frontmatter that we want to add to the defaults file.
+ * @param  {object}  root0                 Optional params Object
+ * @param  {object}  root0.customMetadata  Custom metadata object to process. In-file metadata will be applied over the top of this.
+ * @param  {string}  root0.outputFile      Output file to configure writer
+ * @param  {string}  root0.writer          Pandoc writer to use if you don't want the tool to try and work it out automagically.
  *
  * @returns {object}  defaultsFileContents  A valid pandoc defaults file.
  */
-export default function makeDefaultsFile (frontmatter, { outputFile = null, writer = null } = {} ) {
+export default function makeDefaultsFile (frontmatter, { outputFile = null, writer = null, customMetadata  = null } = {} ) {
   // Iterate over object's properties; if in defaults make root object in output yaml.
   // If not in defaults, add to output.metadata as output.metadata.name
   validateFrontmatter(frontmatter)
-  let defaultsFileContents = processProperties(frontmatter)
+  let defaultsFileContents = Object.assign(processProperties(frontmatter), processProperties(customMetadata))
 
 
   // if we explicitly passed outputFile to the function we'll assume that it should take precedence.
