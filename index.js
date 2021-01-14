@@ -84,14 +84,17 @@ export function validateFrontmatter(frontmatter) {
   }
 }
 
+
 /**
+ *
  *  Function to provide the content for a pandoc defaults file from frontmatter input.
  *
- * @param  {object}  frontmatter  Frontmatter that we want to add to the defaults file.
- * @param  {string}  outputFile   Output file to configure writer
- * @param  {string}  writer       Pandoc writer to use if you don't want the tool to try and work it out automagically.
+ * @param  {object}  frontmatter    Frontmatter that we want to add to the defaults file.
+ * @param  {object}  {}             Optional params Object
+ * @param  {string}  {}.outputFile  Output file to configure writer
+ * @param  {string}  {}.writer      Pandoc writer to use if you don't want the tool to try and work it out automagically.
  *
- * @returns {object} defaultsFileContents   The contents of a defaults file to do what you will with.
+ * @returns {object}  defaultsFileContents  A valid pandoc defaults file.
  */
 export default function makeDefaultsFile (frontmatter, { outputFile = null, writer = null } = {} ) {
   // Iterate over object's properties; if in defaults make root object in output yaml.
