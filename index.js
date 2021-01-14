@@ -24,11 +24,10 @@ import getWriter from './util/getWriter.js'
  *
  * @param   {object}  property    Property that we want to know about.
  *
- * @returns {boolean} existsInSchema   Whether or not this is a default property.
+ * @returns {boolean} Whether or not this is a default property.
  */
 export function isDefaultProperty(property) {
-  let existsInSchema = Object.prototype.hasOwnProperty.call(schema.properties, Object.keys(property)) ? true : false
-  return existsInSchema
+  return Object.prototype.hasOwnProperty.call(schema.properties, Object.keys(property)) ? true : false
 }
 
 /**
@@ -62,7 +61,7 @@ export function processProperties(properties) {
 /**
  *  Function to validate frontmatter values against the schema.
  *
- * @param   {object}  frontmatter    File extension that we want a writer for.
+ * @param   {object}  frontmatter    Frontmatter that we need to validate.
  *
  */
 export function validateFrontmatter(frontmatter) {
