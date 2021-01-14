@@ -12,6 +12,7 @@ import makeDefaultsFile from './index.js'
 
 import { validateFrontmatter } from './index.js'
 import { isDefaultProperty } from './index.js'
+import { processProperties } from './index.js'
 import getWriter from './util/getWriter.js'
 
 // eslint-disable-next-line no-undef
@@ -20,8 +21,10 @@ process.chdir('./test')
 test('Valid Pandoc defaults file passes JSONSchema validation', async t => {
   let fileContents = fs.readFileSync('./defaults.yaml', 'utf-8')
   let data = yaml.safeLoad(fileContents)
-  const validated = validateFrontmatter(data)
-  t.false(validated.errors.length > 0)
+  t.notThrows(() => {
+    validateFrontmatter(data),
+    'Frontmatter validation returned errors.'
+  })
 })
 
 test('getWriter returns correct value for PDF', async t => {
@@ -129,18 +132,16 @@ test('makeDefaultsFile returns with valid input', async t => {
       }
     }
   }
-  const defaultsFile = makeDefaultsFile(frontmatter)
-  const validated = revalidator.validate(defaultsFile, schema)
+  const validated = revalidator.validate(makeDefaultsFile(frontmatter), schema)
   t.true(validated.errors.length === 0)
 })
 
 test('makeDefaultsFile throws an error with invalid input', t => {
-  let fileContents = fs.readFileSync('./output-file.yaml', 'utf-8')
+  let fileContents = fs.readFileSync('./invalid-frontmatter.yaml', 'utf-8')
   let frontmatter = yaml.safeLoad(fileContents)
-  // Todo: Validate the error in any way, shape, or form.
-  // eslint-disable-next-line no-unused-vars
   const error = t.throws(() => {
-    makeDefaultsFile(frontmatter)
+    makeDefaultsFile(frontmatter),
+    t.is(error.message, 'Frontmatter validation returned errors.')
   })
 })
 
@@ -161,10 +162,69 @@ test('makeDefaultsFile returns appropriate writer when presented with output-fil
       }
     }
   }
-  const defaultsFile = makeDefaultsFile(frontmatter)
-  const validated = revalidator.validate(defaultsFile, schema)
-  t.true(validated.errors.length === 0)
+  const validated = revalidator.validate(makeDefaultsFile(frontmatter), schema)
+  t.true(validated.errors.length == 0)
+})
+
+test('processProperties places default value in root of object', t=> {
+  const property = {
+    writer : 'pdf'
+  }
+  const schema = {
+    properties: {
+      writer: {
+        type: 'string',
+        enum: ['pdf'],
+        required: true
+      }
+    }
+  }
+
+  const validated = revalidator.validate(processProperties(property), schema)
+  console.error(processProperties(property))
+  t.true(validated.errors.length == 0)
+})
+
+test('processProperties places special case in object.metadata', t=> {
+  const property = {
+    'csl' : 'this-is-a-csl-string'
+  }
+  const schema = {
+    properties: {
+      metadata: {
+        csl: {
+          type: 'string',
+          enum: ['this-is-a-csl-string'],
+          required: true
+        }
+      }
+    }
+  }
+
+  const validated = revalidator.validate(processProperties(property), schema)
+  t.true(validated.errors.length == 0)
+})
+
+test('processProperties places custom property in object.metadata', t=> {
+  const property = {
+    'custom-property' : 'this-is-a-custom-property-string'
+  }
+  const schema = {
+    properties: {
+      metadata: {
+        'custom-property': {
+          type: 'string',
+          enum: ['this-is-a-custom-property-string'],
+          required: true
+        }
+      }
+    }
+  }
+
+  const validated = revalidator.validate(processProperties(property), schema)
+  t.true(validated.errors.length == 0)
 })
 
 test.todo('Invalid writer fails schema')
 test.todo('valid writer passes schema')
+test.todo('Spaces in content are preserved')
