@@ -1,6 +1,6 @@
 {
   "name": "lackadaisical-defaults-generator",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A utility for generating pandoc defaults files from Markdown YAML frontmatter.",
   "main": "index.js",
   "repository": "https://github.com/Lackadaisical-Documentation-Generator/Lackadaisical-Defaults-Generator",
