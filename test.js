@@ -82,40 +82,42 @@ test('makeDefaultsFile returns with valid input', async t => {
   let frontmatter = yaml.safeLoad(fileContents)
   const schema = {
     properties: {
-      title: {
-        type: 'string',
-        enum: ['Example Presentation'],
-        required: true
-      },
-      'background-image': {
-        type: 'boolean',
-        enum: [true],
-        required: true
-      },
-      author: {
-        type: 'string',
-        enum: ['Matt Jolly'],
-        required: true
-      },
-      keywords: {
-        type: 'array',
-        enum: ['example'],
-        required: true
-      },
-      subject: {
-        type: 'string',
-        enum: ['example'],
-        required: true
-      },
-      aspectratio: {
-        type: 'number',
-        enum: [169],
-        required: true
-      },
-      'table-row-highlighting': {
-        type: 'boolean',
-        enum: [true],
-        required: true
+      metadata: {
+        title: {
+          type: 'string',
+          enum: ['Example Presentation'],
+          required: true
+        },
+        'background-image': {
+          type: 'boolean',
+          enum: [true],
+          required: true
+        },
+        author: {
+          type: 'string',
+          enum: ['Matt Jolly'],
+          required: true
+        },
+        keywords: {
+          type: 'array',
+          enum: ['example'],
+          required: true
+        },
+        subject: {
+          type: 'string',
+          enum: ['example'],
+          required: true
+        },
+        aspectratio: {
+          type: 'number',
+          enum: [169],
+          required: true
+        },
+        'table-row-highlighting': {
+          type: 'boolean',
+          enum: [true],
+          required: true
+        }
       },
       toc: {
         type: 'boolean',
@@ -130,6 +132,7 @@ test('makeDefaultsFile returns with valid input', async t => {
     }
   }
   const validated = revalidator.validate(makeDefaultsFile(frontmatter), schema)
+
   t.true(validated.errors.length === 0)
 })
 

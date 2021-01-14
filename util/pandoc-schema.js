@@ -14,13 +14,57 @@
  * END HEADER
  */
 
-// pandoc 2.9.2.1
+// pandoc --list-input-formats (pandoc 2.11.0.2)
 const readers = [
+  'biblatex',
+  'bibtex',
+  'commonmark',
+  'commonmark_x',
+  'creole',
+  'csljson',
+  'csv',
+  'docbook',
+  'docx',
+  'dokuwiki',
+  'epub',
+  'fb2',
+  'gfm',
+  'haddock',
+  'html',
+  'ipynb',
+  'jats',
+  'jira',
+  'json',
+  'latex',
+  'man',
+  'markdown',
+  'markdown_github',
+  'markdown_mmd',
+  'markdown_phpextra',
+  'markdown_strict',
+  'mediawiki',
+  'muse',
+  'native',
+  'odt',
+  'opml',
+  'org',
+  'rst',
+  't2t',
+  'textile',
+  'tikiwiki',
+  'twiki',
+  'vimwiki',
+]
+
+// pandoc --list-output-formats (pandoc 2.11.0.2)
+const writers = [
   'asciidoc',
   'asciidoctor',
   'beamer',
   'commonmark',
+  'commonmark_x',
   'context',
+  'csljson',
   'docbook',
   'docbook4',
   'docbook5',
@@ -73,43 +117,6 @@ const readers = [
   'textile',
   'xwiki',
   'zimwiki'
-]
-
-const writers = [
-  'commonmark',
-  'creole',
-  'csv',
-  'docbook',
-  'docx',
-  'dokuwiki',
-  'epub',
-  'fb2',
-  'gfm',
-  'haddock',
-  'html',
-  'ipynb',
-  'jats',
-  'jira',
-  'json',
-  'latex',
-  'man',
-  'markdown',
-  'markdown_github',
-  'markdown_mmd',
-  'markdown_phpextra',
-  'markdown_strict',
-  'mediawiki',
-  'muse',
-  'native',
-  'odt',
-  'opml',
-  'org',
-  'rst',
-  't2t',
-  'textile',
-  'tikiwiki',
-  'twiki',
-  'vimwiki'
 ]
 
 /*
