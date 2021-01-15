@@ -18,7 +18,7 @@ import getWriter from './util/getWriter.js'
 // eslint-disable-next-line no-undef
 process.chdir('./test')
 
-test('Valid Pandoc defaults file passes JSONSchema validation', async t => {
+test('Valid Pandoc defaults file passes JSONSchema validation', t => {
   let fileContents = fs.readFileSync('./defaults.yaml', 'utf-8')
   let data = yaml.safeLoad(fileContents)
   t.notThrows(() => {
@@ -27,14 +27,14 @@ test('Valid Pandoc defaults file passes JSONSchema validation', async t => {
   })
 })
 
-test('getWriter returns correct value for PDF', async t => {
+test('getWriter returns correct value for PDF', t => {
   // Simulate a real filename and snip the extension like we would in the main function
   let fileext = path.extname('/test/path/to/file.pdf')
   const writer = getWriter(fileext)
   t.true(writer === 'pdf')
 })
 
-test('getWriter returns correct value for HTML', async t => {
+test('getWriter returns correct value for HTML', t => {
   // Simulate a real filename and snip the extension like we would in the main function
   let fileext = path.extname('/test/path/to/file.html')
   const writer = getWriter(fileext)
@@ -42,7 +42,7 @@ test('getWriter returns correct value for HTML', async t => {
 
 })
 
-test('getWriter returns correct value for DOCX', async t => {
+test('getWriter returns correct value for DOCX', t => {
   // Simulate a real filename and snip the extension like we would in the main function
   let fileext = path.extname('/test/path/to/file.docx')
   const writer = getWriter(fileext)
@@ -50,7 +50,7 @@ test('getWriter returns correct value for DOCX', async t => {
 
 })
 
-test('getWriter returns correct value for PPTX', async t => {
+test('getWriter returns correct value for PPTX', t => {
   // Simulate a real filename and snip the extension like we would in the main function
   let fileext = path.extname('/test/path/to/file.pptx')
   const writer = getWriter(fileext)
@@ -58,7 +58,7 @@ test('getWriter returns correct value for PPTX', async t => {
 
 })
 
-test('getWriter returns null for unknown format', async t => {
+test('getWriter returns null for unknown format', t => {
   // Simulate a real filename and snip the extension like we would in the main function
   let fileext = path.extname('/test/path/to/file.potato')
   const writer = getWriter(fileext)
@@ -66,18 +66,18 @@ test('getWriter returns null for unknown format', async t => {
 
 })
 
-test('isDefaultProperty returns true for default properties', async t => {
+test('isDefaultProperty returns true for default properties', t => {
   const property = 'output-file'
   t.true(isDefaultProperty(property))
 })
 
 
-test('isDefaultProperty returns false for custom properties',  async t => {
+test('isDefaultProperty returns false for custom properties', t => {
   const property = 'title'
   t.false(isDefaultProperty(property))
 })
 
-test('makeDefaultsFile returns with valid input', async t => {
+test('makeDefaultsFile returns with valid input', t => {
   let fileContents = fs.readFileSync('./valid-frontmatter.yaml', 'utf-8')
   let frontmatter = yaml.safeLoad(fileContents)
   const schema = {
@@ -224,7 +224,7 @@ test('processProperties places custom property in object.metadata', t=> {
   t.true(validated.errors.length == 0)
 })
 
-test('Invalid writer fails schema validation', async t => {
+test('Invalid writer fails schema validation', t => {
   const data = {
     writer: 'not-a-real-writer'
   }
@@ -234,7 +234,7 @@ test('Invalid writer fails schema validation', async t => {
   })
 })
 
-test('Valid writer passes schema validation', async t => {
+test('Valid writer passes schema validation', t => {
   const data = {
     writer: 'html'
   }
@@ -244,7 +244,7 @@ test('Valid writer passes schema validation', async t => {
   })
 })
 
-test('Invalid reader fails schema validation', async t => {
+test('Invalid reader fails schema validation', t => {
   const data = {
     reader: 'not-a-real-reader'
   }
@@ -254,7 +254,7 @@ test('Invalid reader fails schema validation', async t => {
   })
 })
 
-test('Valid reader passes schema validation', async t => {
+test('Valid reader passes schema validation', t => {
   const data = {
     reader: 'html'
   }
@@ -264,7 +264,7 @@ test('Valid reader passes schema validation', async t => {
   })
 })
 
-test('variables are placed in output object correctly', async t => {
+test('variables are placed in output object correctly', t => {
   const data = {
     variable: {
       'test-variable': 'test variable'
@@ -287,7 +287,7 @@ test('variables are placed in output object correctly', async t => {
 })
 
 
-test('Explicit metadata is placed in output object correctly', async t => {
+test('Explicit metadata is placed in output object correctly', t => {
   const data = {
     metadata: {
       'test-metadata': 'test metadata'
@@ -309,7 +309,7 @@ test('Explicit metadata is placed in output object correctly', async t => {
   t.true(validated.errors.length == 0)
 })
 
-test('Explicit outputFile passed to makeDefaultsFile overrides yaml input', async t => {
+test('Explicit outputFile passed to makeDefaultsFile overrides yaml input', t => {
   const output = '../output.pdf'
   const data = {
     'output-file': 'user specified'
@@ -327,7 +327,7 @@ test('Explicit outputFile passed to makeDefaultsFile overrides yaml input', asyn
   t.true(validated.errors.length == 0)
 })
 
-test('Explicit writer passed to makeDefaultsFile overrides yaml input', async t => {
+test('Explicit writer passed to makeDefaultsFile overrides yaml input', t => {
   const data = {
     'writer': 'pdf'
   }
@@ -344,7 +344,7 @@ test('Explicit writer passed to makeDefaultsFile overrides yaml input', async t 
   t.true(validated.errors.length == 0)
 })
 
-test('Custom metadata objects are accepted', async t => {
+test('Custom metadata objects are accepted', t => {
   const data = {
     customMetadata: {
       title: 'Custom Metadata Title'
@@ -365,7 +365,7 @@ test('Custom metadata objects are accepted', async t => {
   t.true(validated.errors.length == 0)
 })
 
-test('Custom metadata values are overridden by in-document values', async t => {
+test('Custom metadata values are overridden by in-document values', t => {
   const data = {
     customMetadata: {
       title: 'Custom Metadata Title'

@@ -10,6 +10,7 @@
   "devDependencies": {
     "ava": "^3.15.0",
     "eslint": "^7.17.0",
+    "eslint-plugin-ava": "^11.0.0",
     "eslint-plugin-jsdoc": "^31.0.3",
     "fs": "^0.0.1-security",
     "yaml": "^1.10.0"

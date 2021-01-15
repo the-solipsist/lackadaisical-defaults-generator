@@ -4,6 +4,7 @@ env:
 extends:
   - 'eslint:recommended'
   - 'plugin:jsdoc/recommended'
+  - 'plugin:ava/recommended'
 parserOptions:
   ecmaVersion: 12
   sourceType: module
@@ -22,3 +23,4 @@ rules:
     - never
 plugins:
   - jsdoc
+  - ava
