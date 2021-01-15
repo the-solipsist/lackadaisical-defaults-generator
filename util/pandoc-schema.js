@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /* eslint-disable quotes */
 /**
  *
@@ -440,4 +439,3 @@ const schema = {
 }
 
 export default schema
-
