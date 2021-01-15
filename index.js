@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * BEGIN HEADER
  *
@@ -12,11 +11,11 @@
  * END HEADER
  */
 
-import revalidator from 'revalidator'
 import path from 'path'
+import revalidator from 'revalidator'
 
-import schema  from './util/pandoc-schema.js'
 import getWriter from './util/getWriter.js'
+import schema  from './util/pandoc-schema.js'
 
 /**
  *  Function to determine if a property is a default 'defaults' property.
