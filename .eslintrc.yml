@@ -2,25 +2,41 @@ env:
   node: true
   es2021: true
 extends:
-  - 'eslint:recommended'
-  - 'plugin:jsdoc/recommended'
-  - 'plugin:ava/recommended'
+  - eslint:recommended
+  - plugin:@typescript-eslint/eslint-recommended
+  - plugin:@typescript-eslint/recommended
+  - plugin:@typescript-eslint/recommended-requiring-type-checking
+  - plugin:import/typescript
+  - prettier
+  - prettier/@typescript-eslint
+  - plugin:prettier/recommended
+  - prettier/@typescript-eslint
+  - plugin:node/recommended
+  - plugin:jsdoc/recommended
+
+parser: '@typescript-eslint/parser'
 parserOptions:
-  ecmaVersion: 12
+  ecmaVersion: 2020
+  impliedStrict: true
   sourceType: module
+  project: ./tsconfig.json
 rules:
-  indent:
-    - error
-    - 2
   linebreak-style:
     - error
     - unix
-  quotes:
+  prettier/prettier:
     - error
-    - single
-  semi:
-    - error
-    - never
+    -
+      semi: false
+      singleQuote: true
+  node/no-unsupported-features/es-syntax: 0
+settings:
+  node:
+    tryExtensions:
+      - .ts
+      - .js
 plugins:
   - jsdoc
   - ava
+  - '@typescript-eslint'
+  - prettier
