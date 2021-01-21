@@ -318,7 +318,7 @@ test('Explicit outputFile passed to makeDefaultsFile overrides yaml input', (t) 
     },
   }
   const validated = revalidator.validate(
-    makeDefaultsFile(data, undefined, path.resolve(output)),
+    makeDefaultsFile(data, undefined, undefined, path.resolve(output)),
     schema
   )
   t.true(validated.errors.length == 0)
@@ -338,7 +338,7 @@ test('Explicit writer passed to makeDefaultsFile overrides yaml input', (t) => {
     },
   }
   const validated = revalidator.validate(
-    makeDefaultsFile(data, undefined, undefined, 'html'),
+    makeDefaultsFile(data, undefined, undefined, undefined, 'html'),
     schema
   )
   t.true(validated.errors.length == 0)
@@ -387,6 +387,35 @@ test('Custom metadata values are overridden by in-document values', (t) => {
   }
   const validated = revalidator.validate(
     makeDefaultsFile({ title: 'Standard Title' }, data),
+    outputSchema
+  )
+  t.true(validated.errors.length == 0)
+})
+
+test('Custom metadata overrides base configuration', (t) => {
+  const customMetadata = {
+    metadata: {
+      title: 'Custom Metadata Title',
+    },
+  }
+  const pandocBase = {
+    metadata: {
+      title: 'Default Title',
+    },
+  }
+  const outputSchema: Record<string, unknown> = {
+    properties: {
+      metadata: {
+        title: {
+          type: 'string',
+          enum: ['Custom Metadata Title'],
+          required: true,
+        },
+      },
+    },
+  }
+  const validated = revalidator.validate(
+    makeDefaultsFile({}, customMetadata, pandocBase),
     outputSchema
   )
   t.true(validated.errors.length == 0)

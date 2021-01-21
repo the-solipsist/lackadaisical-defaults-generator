@@ -207,6 +207,7 @@ function setKey(
  *
  * @param  {object}  frontmatter     Frontmatter that we want to add to the defaults file.
  * @param  {object}  customMetadata  Custom metadata object to process. In-file metadata will be applied over the top of this.
+ * @param  {object}  defaultsBase    Base configuration object for customisation.
  * @param  {string}  outputFile      Output file to configure writer
  * @param  {string}  writer          Pandoc writer to use if you don't want the tool to try and work it out automagically.
  *
@@ -215,18 +216,32 @@ function setKey(
 export default function makeDefaultsFile(
   frontmatter: Record<string, unknown>,
   customMetadata?: Record<string, unknown>,
+  defaultsBase?: Record<string, unknown>,
   outputFile?: string,
   writer?: string
 ): defaultsFile {
   // Iterate over object's properties; if in defaults make root object in output yaml.
   // If not in defaults, add to output.metadata as output.metadata.name
   validateAgainstSchema(frontmatter)
-  const defaultsFileContents: defaultsFile = customMetadata
-    ? Object.assign(
-        processProperties(customMetadata),
-        processProperties(frontmatter)
-      )
-    : processProperties(frontmatter)
+  let defaultsFileContents: defaultsFile = processProperties(frontmatter)
+  // Precedence: frontmatter overrides customMetadata overrides defaultsBase
+  if (customMetadata !== undefined && defaultsBase !== undefined) {
+    defaultsFileContents = Object.assign(
+      processProperties(defaultsBase),
+      processProperties(customMetadata),
+      processProperties(frontmatter)
+    )
+  } else if (customMetadata !== undefined) {
+    defaultsFileContents = Object.assign(
+      processProperties(customMetadata),
+      processProperties(frontmatter)
+    )
+  } else if (defaultsBase !== undefined) {
+    defaultsFileContents = Object.assign(
+      processProperties(defaultsBase),
+      processProperties(frontmatter)
+    )
+  }
 
   // if we explicitly passed outputFile to the function we'll assume that it should take precedence.
   if (outputFile !== undefined) {
