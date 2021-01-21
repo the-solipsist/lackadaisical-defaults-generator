@@ -1,6 +1,6 @@
 {
   "name": "@lackadaisical/defaults-generator",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "engines": {
     "node": ">=12.0.0"
   },
@@ -55,7 +55,6 @@
     "revalidator": "^0.3.1"
   },
   "files": [
-    "./dist/index*",
-    "./dist/util/*"
+    "./dist/src/**"
   ]
 }
