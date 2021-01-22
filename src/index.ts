@@ -39,12 +39,7 @@ export interface defaultsFile extends Record<string, unknown> {
  * @returns {boolean} Whether or not this is a default property.
  */
 export function isDefaultProperty(property: string): boolean {
-  return Object.prototype.hasOwnProperty.call(
-    defaultsSchema.properties,
-    property
-  )
-    ? true
-    : false
+  return Object.prototype.hasOwnProperty.call(defaultsSchema.properties, property) ? true : false
 }
 
 /**
@@ -83,11 +78,7 @@ function recurseDocumentProperties(obj: Record<string, unknown>): defaultsFile {
       properties[key] = value
     }
   }
-  const combinedProperties: defaultsFile = Object.assign(
-    properties,
-    metadataValues,
-    variableValues
-  )
+  const combinedProperties: defaultsFile = Object.assign(properties, metadataValues, variableValues)
   return combinedProperties
 }
 
@@ -111,9 +102,7 @@ function flattenProperties(obj: Record<string, unknown>): defaultsFile {
  *
  * @returns {object}                Processed Properties
  */
-export function processProperties(
-  properties: Record<string, unknown>
-): defaultsFile {
+export function processProperties(properties: Record<string, unknown>): defaultsFile {
   const processedProperties: defaultsFile = {
     metadata: {},
     variables: {},
@@ -127,10 +116,7 @@ export function processProperties(
     // Check if the property appears in the schema. If it's there, it's a default property!
     // Special Cases: If 'bibliogrpahy', 'csl', or 'citation-abbreviations' is found in root,
     // write to schema.metadata.property. That's what settting them in the root does in the end and it's more explicit.
-    if (
-      isDefaultProperty(key) &&
-      !(key === ('bibliogrpahy' || 'csl' || 'citation-abbreviations'))
-    ) {
+    if (isDefaultProperty(key) && !(key === ('bibliogrpahy' || 'csl' || 'citation-abbreviations'))) {
       processedProperties[key] = value
     } else {
       // Using metadata here because values are escaped by pandoc. Are there properties that shouldn't be escaped?
@@ -139,10 +125,7 @@ export function processProperties(
       // These can't be validated against the schema, hope the input was validated externally!
     }
   }
-  const defaultsContent: defaultsFile = Object.assign(
-    processedProperties,
-    metadataKeys
-  )
+  const defaultsContent: defaultsFile = Object.assign(processedProperties, metadataKeys)
   return defaultsContent
 }
 
@@ -152,9 +135,7 @@ export function processProperties(
  * @param   {object}  properties    Frontmatter that we need to validate.
  *
  */
-export function validateAgainstSchema(
-  properties: Record<string, unknown> | defaultsFile
-): void {
+export function validateAgainstSchema(properties: Record<string, unknown> | defaultsFile): void {
   interface IErrrorProperty {
     property: string
     message: string
@@ -185,11 +166,7 @@ export function validateAgainstSchema(
  *
  * @returns {object}          a defaults file object with the new key
  */
-function setKey(
-  defaults: defaultsFile,
-  newKey: string,
-  value: unknown
-): defaultsFile {
+function setKey(defaults: defaultsFile, newKey: string, value: unknown): defaultsFile {
   let defaultsContent: defaultsFile
   if (typeof value !== undefined) {
     const newObj: Record<string, unknown> = {}
@@ -224,23 +201,18 @@ export default function makeDefaultsFile(
   // If not in defaults, add to output.metadata as output.metadata.name
   validateAgainstSchema(frontmatter)
   let defaultsFileContents: defaultsFile = processProperties(frontmatter)
+
   // Precedence: frontmatter overrides customMetadata overrides defaultsBase
-  if (customMetadata !== undefined && defaultsBase !== undefined) {
+  if (typeof customMetadata !== 'undefined' && typeof defaultsBase !== 'undefined') {
     defaultsFileContents = Object.assign(
       processProperties(defaultsBase),
       processProperties(customMetadata),
       processProperties(frontmatter)
     )
-  } else if (customMetadata !== undefined) {
-    defaultsFileContents = Object.assign(
-      processProperties(customMetadata),
-      processProperties(frontmatter)
-    )
-  } else if (defaultsBase !== undefined) {
-    defaultsFileContents = Object.assign(
-      processProperties(defaultsBase),
-      processProperties(frontmatter)
-    )
+  } else if (typeof customMetadata !== 'undefined') {
+    defaultsFileContents = Object.assign(processProperties(customMetadata), processProperties(frontmatter))
+  } else if (typeof defaultsBase !== 'undefined') {
+    defaultsFileContents = Object.assign(processProperties(defaultsBase), processProperties(frontmatter))
   }
 
   // if we explicitly passed outputFile to the function we'll assume that it should take precedence.
@@ -251,11 +223,7 @@ export default function makeDefaultsFile(
   if (writer !== undefined) {
     defaultsFileContents.writer = writer
   } else if (defaultsFileContents['output-file'] !== undefined) {
-    setKey(
-      defaultsFileContents,
-      'writer',
-      getWriter(path.extname(defaultsFileContents['output-file']))
-    )
+    setKey(defaultsFileContents, 'writer', getWriter(path.extname(defaultsFileContents['output-file'])))
   }
   // May as well make sure that we're sending back a valid defaults file.
   validateAgainstSchema(defaultsFileContents)
