@@ -178,25 +178,6 @@ export function validateAgainstSchema(properties: Record<string, unknown> | defa
 }
 
 /**
- * @param {object}  defaults  defaults file object
- * @param {string}  newKey    key that we want to add
- * @param {any}     value     value of the key
- *
- * @returns {object}          a defaults file object with the new key
- */
-function setKey(defaults: defaultsFile, newKey: string, value: unknown): defaultsFile {
-  let defaultsContent: defaultsFile
-  if (typeof value !== undefined) {
-    const newObj: Record<string, unknown> = {}
-    newObj[newKey] = value
-    defaultsContent = Object.assign(defaults, newObj)
-  } else {
-    defaultsContent = defaults
-  }
-  return defaultsContent
-}
-
-/**
  *
  *  Function to provide the content for a pandoc defaults file from frontmatter input.
  *
@@ -243,7 +224,7 @@ export default function makeDefaultsFile(
   if (writer) {
     defaultsFileContents.writer = writer
   } else if (defaultsFileContents['output-file']) {
-    setKey(defaultsFileContents, 'writer', getWriter(path.extname(defaultsFileContents['output-file'])))
+    defaultsFileContents.writer = getWriter(path.extname(defaultsFileContents['output-file']))
   }
   // May as well make sure that we're sending back a valid defaults file.
   validateAgainstSchema(defaultsFileContents)
