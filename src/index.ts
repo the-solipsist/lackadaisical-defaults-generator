@@ -158,6 +158,7 @@ export function processProperties(
   }
   const defaultsContent: defaultsFile = Object.assign(
     processedProperties,
+    variablesKeys,
     metadataKeys
   )
   return defaultsContent

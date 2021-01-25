@@ -130,7 +130,7 @@ test('makeDefaultsFile returns with valid input', (t) => {
   }
   const validated = revalidator.validate(makeDefaultsFile(frontmatter), schema)
 
-  t.true(validated.errors.length === 0)
+  t.true(validated.errors.length === 0) //TODO: This doesn't fail if required values are missing...
 })
 
 test('makeDefaultsFile throws an error with invalid input', (t) => {
