@@ -425,7 +425,7 @@ test('table-of-contents is output as a root key', (t) => {
   t.true(validated.errors.length == 0)
 })
 
-test.only('Keys that do not collide are preserved when properties merged', (t) => {
+test('Keys that do not collide are preserved when properties merged', (t) => {
   const customMetadata = {
     variables: {
       'title-page-background': '/working/resources/template_resources/lackadaisical_title.pdf',

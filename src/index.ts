@@ -13,6 +13,7 @@
  * END HEADER
  */
 
+import * as _ from 'lodash'
 import path from 'path'
 import revalidator from 'revalidator'
 
@@ -142,7 +143,7 @@ export function processProperties(properties: Record<string, unknown>): defaults
       variablesKeys.variables[key] = value
     }
   }
-  const defaultsContent: defaultsFile = Object.assign(processedProperties, variablesKeys, metadataKeys)
+  const defaultsContent: defaultsFile = _.merge(processedProperties, variablesKeys, metadataKeys)
   return defaultsContent
 }
 
@@ -217,29 +218,31 @@ export default function makeDefaultsFile(
   // Iterate over object's properties; if in defaults make root object in output yaml.
   // If not in defaults, add to output.metadata as output.metadata.name
   validateAgainstSchema(frontmatter)
-  let defaultsFileContents: defaultsFile = processProperties(frontmatter)
+  let defaultsFileContents: defaultsFile
 
   // Precedence: frontmatter overrides customMetadata overrides defaultsBase
-  if (typeof customMetadata !== 'undefined' && typeof defaultsBase !== 'undefined') {
-    defaultsFileContents = Object.assign(
+  if (customMetadata && defaultsBase) {
+    defaultsFileContents = _.merge(
       processProperties(defaultsBase),
       processProperties(customMetadata),
       processProperties(frontmatter)
     )
-  } else if (typeof customMetadata !== 'undefined') {
-    defaultsFileContents = Object.assign(processProperties(customMetadata), processProperties(frontmatter))
-  } else if (typeof defaultsBase !== 'undefined') {
-    defaultsFileContents = Object.assign(processProperties(defaultsBase), processProperties(frontmatter))
+  } else if (customMetadata) {
+    defaultsFileContents = _.merge(processProperties(customMetadata), processProperties(frontmatter))
+  } else if (defaultsBase) {
+    defaultsFileContents = _.merge(processProperties(defaultsBase), processProperties(frontmatter))
+  } else {
+    defaultsFileContents = processProperties(frontmatter)
   }
 
   // if we explicitly passed outputFile to the function we'll assume that it should take precedence.
-  if (outputFile !== undefined) {
+  if (outputFile) {
     defaultsFileContents['output-file'] = path.resolve(outputFile)
   }
 
-  if (writer !== undefined) {
+  if (writer) {
     defaultsFileContents.writer = writer
-  } else if (defaultsFileContents['output-file'] !== undefined) {
+  } else if (defaultsFileContents['output-file']) {
     setKey(defaultsFileContents, 'writer', getWriter(path.extname(defaultsFileContents['output-file'])))
   }
   // May as well make sure that we're sending back a valid defaults file.
