@@ -79,7 +79,7 @@ test('makeDefaultsFile returns with valid input', (t) => {
   )
   const schema: Record<string, unknown> = {
     properties: {
-      metadata: {
+      variables: {
         title: {
           type: 'string',
           enum: ['Example Presentation'],
@@ -201,13 +201,13 @@ test('processProperties places special case in object.metadata', (t) => {
   t.true(validated.errors.length == 0)
 })
 
-test('processProperties places custom property in object.metadata', (t) => {
+test('processProperties places custom property in object.variables', (t) => {
   const property = {
     'custom-property': 'this-is-a-custom-property-string',
   }
   const schema: Record<string, unknown> = {
     properties: {
-      metadata: {
+      variables: {
         'custom-property': {
           type: 'string',
           enum: ['this-is-a-custom-property-string'],
@@ -352,7 +352,7 @@ test('Custom metadata objects are accepted', (t) => {
   }
   const outputSchema: Record<string, unknown> = {
     properties: {
-      metadata: {
+      variables: {
         title: {
           type: 'string',
           enum: ['Custom Metadata Title'],
@@ -376,7 +376,7 @@ test('Custom metadata values are overridden by in-document values', (t) => {
   }
   const outputSchema: Record<string, unknown> = {
     properties: {
-      metadata: {
+      variables: {
         title: {
           type: 'string',
           enum: ['Standard Title'],
@@ -394,18 +394,18 @@ test('Custom metadata values are overridden by in-document values', (t) => {
 
 test('Custom metadata overrides base configuration', (t) => {
   const customMetadata = {
-    metadata: {
+    variables: {
       title: 'Custom Metadata Title',
     },
   }
   const pandocBase = {
-    metadata: {
+    variables: {
       title: 'Default Title',
     },
   }
   const outputSchema: Record<string, unknown> = {
     properties: {
-      metadata: {
+      variables: {
         title: {
           type: 'string',
           enum: ['Custom Metadata Title'],
@@ -416,6 +416,39 @@ test('Custom metadata overrides base configuration', (t) => {
   }
   const validated = revalidator.validate(
     makeDefaultsFile({}, customMetadata, pandocBase),
+    outputSchema
+  )
+  t.true(validated.errors.length == 0)
+})
+
+test('toc is output as a root key', (t) => {
+  const outputSchema: Record<string, unknown> = {
+    properties: {
+      toc: {
+        type: 'boolean',
+        enum: [true],
+        required: true,
+      },
+    },
+  }
+  const validated = revalidator.validate(
+    makeDefaultsFile({ toc: true }),
+    outputSchema
+  )
+  t.true(validated.errors.length == 0)
+})
+test('table-of-contents is output as a root key', (t) => {
+  const outputSchema: Record<string, unknown> = {
+    properties: {
+      'table-of-contents': {
+        type: 'boolean',
+        enum: [true],
+        required: true,
+      },
+    },
+  }
+  const validated = revalidator.validate(
+    makeDefaultsFile({ 'table-of-contents': true }),
     outputSchema
   )
   t.true(validated.errors.length == 0)

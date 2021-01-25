@@ -120,10 +120,12 @@ const writers = [
 
 /*
  * JSONSchema for revalidator
- * Informed by https://github.com/jgm/pandoc/issues/5990 and the pandoc manual.
+ * Informed by https://github.com/jgm/pandoc/issues/5990, https://github.com/Zettlr/Zettlr/issues/1640, and the pandoc manual.
  * Thanks to:
  * John MacFarlane https://github.com/jgm
  * Carsten Allefeld https://github.com/allefeld
+ * Pranesh Prakash https://github.com/the-solipsist
+ * Albert Krewinkel https://github.com/tarleb
  */
 const defaultsSchema: Record<string, unknown> = {
   properties: {
@@ -167,6 +169,9 @@ const defaultsSchema: Record<string, unknown> = {
       enum: ['auto', 'none', 'preserve'],
     },
     ascii: {
+      type: 'boolean',
+    },
+    'table-of-contents': {
       type: 'boolean',
     },
     toc: {
@@ -342,6 +347,16 @@ const defaultsSchema: Record<string, unknown> = {
       },
       'citation-abbreviations': {
         type: 'string',
+      },
+      'reference-section-title': {
+        type: 'string',
+      },
+      'suppress-biblogrpahy': {
+        type: 'boolean',
+      },
+      'citation-style': {
+        type: 'string',
+        format: 'url',
       },
     },
     'html-math-method': {

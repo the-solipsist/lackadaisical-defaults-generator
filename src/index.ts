@@ -121,22 +121,39 @@ export function processProperties(
   const metadataKeys: Record<'metadata', Record<string, unknown>> = {
     metadata: {},
   }
+
+  const variablesKeys: Record<'variables', Record<string, unknown>> = {
+    variables: {},
+  }
   const flatProperties: defaultsFile = flattenProperties(properties)
   for (const key in flatProperties) {
     const value: unknown = flatProperties[key]
     // Check if the property appears in the schema. If it's there, it's a default property!
-    // Special Cases: If 'bibliogrpahy', 'csl', or 'citation-abbreviations' is found in root,
-    // write to schema.metadata.property. That's what settting them in the root does in the end and it's more explicit.
     if (
       isDefaultProperty(key) &&
       !(key === ('bibliogrpahy' || 'csl' || 'citation-abbreviations'))
     ) {
       processedProperties[key] = value
-    } else {
-      // Using metadata here because values are escaped by pandoc. Are there properties that shouldn't be escaped?
-      // Add special case handling if something arbitrary (i.e. template stuff) *needs* to be a variable.
+    } else if (
+      key ===
+      ('bibliogrpahy' ||
+        'csl' ||
+        'citation-abbreviations' ||
+        'reference-section-title' ||
+        'suppress-bibliography' ||
+        'citation-style')
+    ) {
+      // Special Cases: Some of the above may root keys OR metadata values; Setting them in the root sets the metadata key under-the-hood, and it's more explicit when reading output.
+      // Others **must** be metadata values (e.g. `citation-style`, `reference-section-title`)
+      // See https://groups.google.com/g/pandoc-discuss/c/tqMp0UKPpZQ/m/lay3hDAVBwAJ && https://github.com/Zettlr/Zettlr/issues/1640
       metadataKeys.metadata[key] = value
+    } else if (key === ('table-of-contents' || 'toc')) {
+      // This must be set as a root key to be consistent across formats.
+      processedProperties[key] = value
+    } else {
+      // Variables values aren't escaped, so we should use them to fill in template variables. Are there any keys that should be escaped?.
       // These can't be validated against the schema, hope the input was validated externally!
+      variablesKeys.variables[key] = value
     }
   }
   const defaultsContent: defaultsFile = Object.assign(
