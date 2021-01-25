@@ -53,8 +53,9 @@
   },
   "type": "commonjs",
   "dependencies": {
-    "path": "^0.12.7",
-    "revalidator": "^0.3.1"
+    "ajv": "^7.0.3",
+    "ajv-formats": "^1.5.1",
+    "path": "^0.12.7"
   },
   "files": [
     "./dist/src/**"

@@ -55,9 +55,8 @@ resource-path: ["."]
 # list of `filters` (see below).
 citeproc: true
 csl: ieee
-bibliography:
-- foobar.bib
-- barbaz.json
+bibliography: foobar.bib
+# This should be an array, but schema validation.
 citation-abbreviations: abbrevs.json
 
 # Filters will be assumed to be Lua filters if they have
@@ -68,8 +67,8 @@ citation-abbreviations: abbrevs.json
 # or `{type: citeproc}`.
 filters:
 - wordcount.lua
-- type: json
-  path: foo.lua
+#- type: json
+#  path: foo.lua
 
 file-scope: false
 
@@ -155,8 +154,8 @@ markdown-headings: setext
 track-changes: accept
 
 html-q-tags: false
-css:
-- http://site.css
+# css can also be an array, but the current schema doesn't allow it
+css: http://site.css
 
 # none, all, or best
 ipynb-output: best

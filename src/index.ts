@@ -14,8 +14,9 @@
  */
 
 import * as _ from 'lodash'
+import Ajv, { DefinedError } from 'ajv'
+import addFormats from 'ajv-formats'
 import path from 'path'
-import revalidator from 'revalidator'
 
 import getWriter from './util/getWriter'
 import defaultsSchema from './util/pandoc-schema'
@@ -28,7 +29,14 @@ import defaultsSchema from './util/pandoc-schema'
 export interface defaultsFile extends Record<string, unknown> {
   'output-file'?: string
   writer?: string
-  metadata?: Record<string, unknown>
+  metadata?: {
+    bibliography?: string
+    csl?: string
+    'citation-abbreviations'?: string
+    'reference-section-title'?: string
+    'suppress-biblogrpahy'?: boolean
+    'citation-style'?: string
+  }
   variables?: Record<string, unknown>
 }
 /**
@@ -79,7 +87,7 @@ function recurseDocumentProperties(obj: Record<string, unknown>): defaultsFile {
       properties[key] = value
     }
   }
-  const combinedProperties: defaultsFile = Object.assign(properties, metadataValues, variableValues)
+  const combinedProperties: defaultsFile = _.merge(properties, metadataValues, variableValues)
   return combinedProperties
 }
 
@@ -94,6 +102,41 @@ function flattenProperties(obj: Record<string, unknown>): defaultsFile {
   }
   flatProperties = recurseDocumentProperties(obj)
   return flatProperties
+}
+
+/**
+ * @param   {string}  key The key that we need to know about
+ * @returns {boolean} Whether or not the key needs to be under metadata
+ */
+function isSpecialKey(key: string): boolean {
+  // Special Cases: Some of the keys below may be root keys OR metadata values; Setting them in the root sets the metadata key under-the-hood, and it's more explicit when reading output.
+  // Others **must** be metadata values (e.g. `citation-style`, `reference-section-title`)
+  // See https://groups.google.com/g/pandoc-discuss/c/tqMp0UKPpZQ/m/lay3hDAVBwAJ && https://github.com/Zettlr/Zettlr/issues/1640
+  let specialKey = false
+  switch (key) {
+    case 'bibliogrpahy':
+      specialKey = true
+      break
+    case 'csl':
+      specialKey = true
+      break
+    case 'citation-abbreviations':
+      specialKey = true
+      break
+    case 'reference-section-title':
+      specialKey = true
+      break
+    case 'suppress-bibliography':
+      specialKey = true
+      break
+    case 'citation-style':
+      specialKey = true
+      break
+    default:
+      specialKey = false
+      break
+  }
+  return specialKey
 }
 
 /**
@@ -117,22 +160,10 @@ export function processProperties(properties: Record<string, unknown>): defaults
   }
   const flatProperties: defaultsFile = flattenProperties(properties)
   for (const key in flatProperties) {
-    const value: unknown = flatProperties[key]
-    // Check if the property appears in the schema. If it's there, it's a default property!
-    if (isDefaultProperty(key) && !(key === ('bibliogrpahy' || 'csl' || 'citation-abbreviations'))) {
+    const value = flatProperties[key]
+    if (isDefaultProperty(key) && !isSpecialKey(key)) {
       processedProperties[key] = value
-    } else if (
-      key ===
-      ('bibliogrpahy' ||
-        'csl' ||
-        'citation-abbreviations' ||
-        'reference-section-title' ||
-        'suppress-bibliography' ||
-        'citation-style')
-    ) {
-      // Special Cases: Some of the above may root keys OR metadata values; Setting them in the root sets the metadata key under-the-hood, and it's more explicit when reading output.
-      // Others **must** be metadata values (e.g. `citation-style`, `reference-section-title`)
-      // See https://groups.google.com/g/pandoc-discuss/c/tqMp0UKPpZQ/m/lay3hDAVBwAJ && https://github.com/Zettlr/Zettlr/issues/1640
+    } else if (isSpecialKey(key)) {
       metadataKeys.metadata[key] = value
     } else if (key === ('table-of-contents' || 'toc')) {
       // This must be set as a root key to be consistent across formats.
@@ -147,6 +178,13 @@ export function processProperties(properties: Record<string, unknown>): defaults
   return defaultsContent
 }
 
+class ValidationError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'ValidationError'
+  }
+}
+
 /**
  *  Function to validate frontmatter values against the schema.
  *
@@ -154,26 +192,14 @@ export function processProperties(properties: Record<string, unknown>): defaults
  *
  */
 export function validateAgainstSchema(properties: Record<string, unknown> | defaultsFile): void {
-  interface IErrrorProperty {
-    property: string
-    message: string
-  }
-
-  interface IReturnMessage {
-    valid: boolean
-    errors: IErrrorProperty[]
-  }
-  let validated: IReturnMessage
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    validated = revalidator.validate(properties, defaultsSchema)
-
-    if (!validated.valid) {
-      console.log(validated.errors) // Todo: This would be nicer if we parsed it so that it was human readable.
-      throw 'Schema validation returned errors.'
+  const ajv = new Ajv()
+  addFormats(ajv)
+  const validator = ajv.compile(defaultsSchema)
+  if (!validator(properties)) {
+    for (const err of validator.errors as DefinedError[]) {
+      console.error(err)
     }
-  } catch (e) {
-    console.error(e)
+    throw new ValidationError('Validation against schema returned errors.')
   }
 }
 

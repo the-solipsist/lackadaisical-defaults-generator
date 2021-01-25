@@ -7,7 +7,6 @@ import test from 'ava'
 import YAML from 'yaml'
 import fs from 'fs'
 import path from 'path'
-import revalidator from 'revalidator'
 
 import makeDefaultsFile from '../src/index'
 
@@ -20,9 +19,9 @@ import getWriter from '../src/util/getWriter'
 process.chdir('./test')
 
 test('Valid Pandoc defaults file passes JSONSchema validation', (t) => {
-  const data: Record<string, unknown> = YAML.parse(fs.readFileSync('./defaults.yaml', 'utf-8'))
+  const data = YAML.parse(fs.readFileSync(path.resolve('./defaults.yaml'), 'utf-8'))
   t.notThrows(() => {
-    validateAgainstSchema(data), 'Frontmatter validation returned errors.'
+    validateAgainstSchema(data), 'Validation against schema returned errors.'
   })
 })
 
@@ -71,147 +70,46 @@ test('isDefaultProperty returns false for custom properties', (t) => {
   t.false(isDefaultProperty(property))
 })
 
-test('makeDefaultsFile returns with valid input', (t) => {
-  const frontmatter = YAML.parse(fs.readFileSync('./valid-frontmatter.yaml', 'utf-8'))
-  const schema: Record<string, unknown> = {
-    properties: {
-      variables: {
-        title: {
-          type: 'string',
-          enum: ['Example Presentation'],
-          required: true,
-        },
-        'background-image': {
-          type: 'boolean',
-          enum: [true],
-          required: true,
-        },
-        author: {
-          type: 'string',
-          enum: ['Matt Jolly'],
-          required: true,
-        },
-        keywords: {
-          type: 'array',
-          enum: ['example'],
-          required: true,
-        },
-        subject: {
-          type: 'string',
-          enum: ['example'],
-          required: true,
-        },
-        aspectratio: {
-          type: 'number',
-          enum: [169],
-          required: true,
-        },
-        'table-row-highlighting': {
-          type: 'boolean',
-          enum: [true],
-          required: true,
-        },
-      },
-      toc: {
-        type: 'boolean',
-        enum: [true],
-        required: true,
-      },
-      'slide-level': {
-        type: 'number',
-        enum: [2],
-        required: true,
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile(frontmatter), schema)
-
-  t.true(validated.errors.length === 0) //TODO: This doesn't fail if required values are missing...
-})
-
 test('makeDefaultsFile throws an error with invalid input', (t) => {
   const frontmatter = YAML.parse(fs.readFileSync('./invalid-frontmatter.yaml', 'utf-8'))
   const error = t.throws(() => {
-    makeDefaultsFile(frontmatter), t.is(error.message, 'Frontmatter validation returned errors.')
+    makeDefaultsFile(frontmatter), t.is(error.message, 'Validation against schema returned errors.')
   })
 })
 
 test('makeDefaultsFile returns appropriate writer when presented with output-file', (t) => {
   const frontmatter = YAML.parse(fs.readFileSync('./output-file.yaml', 'utf-8'))
-  const schema: Record<string, unknown> = {
-    properties: {
-      'output-file': {
-        type: 'string',
-        enum: ['test.pdf'],
-        required: true,
-      },
-      writer: {
-        type: 'string',
-        enum: ['pdf'],
-        required: true,
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile(frontmatter), schema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile(frontmatter)
+  t.true(output.writer === 'pdf')
 })
 
 test('processProperties places default value in root of object', (t) => {
   const property = {
     writer: 'pdf',
   }
-  const schema: Record<string, unknown> = {
-    properties: {
-      writer: {
-        type: 'string',
-        enum: ['pdf'],
-        required: true,
-      },
-    },
-  }
-
-  const validated = revalidator.validate(processProperties(property), schema)
-  t.true(validated.errors.length == 0)
+  const output = processProperties(property)
+  t.true(output.writer === 'pdf')
 })
 
 test('processProperties places special case in object.metadata', (t) => {
   const property = {
-    csl: 'this-is-a-csl-string',
+    csl: 'https://www.zotero.org/styles/vancouver-superscript',
   }
-  const schema: Record<string, unknown> = {
-    properties: {
-      metadata: {
-        csl: {
-          type: 'string',
-          enum: ['this-is-a-csl-string'],
-          required: true,
-        },
-      },
-    },
-  }
-
-  const validated = revalidator.validate(processProperties(property), schema)
-  t.true(validated.errors.length == 0)
+  const output = processProperties(property)
+  console.error(output)
+  t.true(
+    Object.prototype.hasOwnProperty.call(output.metadata, 'csl') &&
+      output.metadata?.csl === 'https://www.zotero.org/styles/vancouver-superscript'
+  )
 })
 
 test('processProperties places custom property in object.variables', (t) => {
   const property = {
     'custom-property': 'this-is-a-custom-property-string',
   }
-  const schema: Record<string, unknown> = {
-    properties: {
-      variables: {
-        'custom-property': {
-          type: 'string',
-          enum: ['this-is-a-custom-property-string'],
-          required: true,
-        },
-      },
-    },
-  }
 
-  const validated = revalidator.validate(processProperties(property), schema)
-  t.true(validated.errors.length == 0)
+  const output = processProperties(property)
+  t.true(Object.prototype.hasOwnProperty.call(output.variables, 'custom-property'))
 })
 
 test('Invalid writer fails schema validation', (t) => {
@@ -219,7 +117,7 @@ test('Invalid writer fails schema validation', (t) => {
     writer: 'not-a-real-writer',
   }
   const error = t.throws(() => {
-    makeDefaultsFile(data), t.is(error.message, 'Frontmatter validation returned errors.')
+    makeDefaultsFile(data), t.is(error.message, 'Validation against schema returned errors.')
   })
 })
 
@@ -228,7 +126,7 @@ test('Valid writer passes schema validation', (t) => {
     writer: 'html',
   }
   t.notThrows(() => {
-    makeDefaultsFile(data), 'Frontmatter validation returned errors.'
+    makeDefaultsFile(data), 'Validation against schema returned errors.'
   })
 })
 
@@ -237,7 +135,7 @@ test('Invalid reader fails schema validation', (t) => {
     reader: 'not-a-real-reader',
   }
   const error = t.throws(() => {
-    makeDefaultsFile(data), t.is(error.message, 'Frontmatter validation returned errors.')
+    makeDefaultsFile(data), t.is(error.message, 'Validation against schema returned errors.')
   })
 })
 
@@ -246,30 +144,19 @@ test('Valid reader passes schema validation', (t) => {
     reader: 'html',
   }
   t.notThrows(() => {
-    makeDefaultsFile(data), 'Frontmatter validation returned errors.'
+    makeDefaultsFile(data), 'Validation against schema returned errors.'
   })
 })
 
 test('variables are placed in output object correctly', (t) => {
   const data = {
-    variable: {
+    variables: {
       'test-variable': 'test variable',
     },
   }
-  const schema: Record<string, unknown> = {
-    properties: {
-      metadata: {
-        'test-variable': {
-          type: 'string',
-          enum: ['test variable'],
-          required: true,
-        },
-      },
-    },
-  }
 
-  const validated = revalidator.validate(makeDefaultsFile(data), schema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile(data)
+  t.true(Object.prototype.hasOwnProperty.call(output.variables, 'test-variable'))
 })
 
 test('Explicit metadata is placed in output object correctly', (t) => {
@@ -278,97 +165,42 @@ test('Explicit metadata is placed in output object correctly', (t) => {
       'test-metadata': 'test metadata',
     },
   }
-  const schema: Record<string, unknown> = {
-    properties: {
-      metadata: {
-        'test-metadata': {
-          type: 'string',
-          enum: ['test-variable'],
-          required: true,
-        },
-      },
-    },
-  }
-
-  const validated = revalidator.validate(makeDefaultsFile(data), schema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile(data)
+  t.true(Object.prototype.hasOwnProperty.call(output.metadata, 'test-metadata'))
 })
 
 test('Explicit outputFile passed to makeDefaultsFile overrides yaml input', (t) => {
-  const output = '../output.pdf'
+  const outputFile = '../output.pdf'
   const data = {
     'output-file': 'user specified',
   }
-  const schema: Record<string, unknown> = {
-    properties: {
-      'output-file': {
-        type: 'string',
-        enum: [path.resolve(output)],
-        required: true,
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile(data, undefined, undefined, path.resolve(output)), schema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile(data, undefined, undefined, path.resolve(outputFile))
+  t.true(output['output-file'] === path.resolve(outputFile))
 })
 
 test('Explicit writer passed to makeDefaultsFile overrides yaml input', (t) => {
   const data = {
     writer: 'pdf',
   }
-  const schema: Record<string, unknown> = {
-    properties: {
-      writer: {
-        type: 'string',
-        enum: ['html'],
-        required: true,
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile(data, undefined, undefined, undefined, 'html'), schema)
-  t.true(validated.errors.length == 0)
+
+  const output = makeDefaultsFile(data, undefined, undefined, undefined, 'html')
+  t.true(output.writer === 'html')
 })
 
 test('Custom metadata objects are accepted', (t) => {
   const data = {
-    customMetadata: {
-      title: 'Custom Metadata Title',
-    },
+    title: 'Custom Metadata Title',
   }
-  const outputSchema: Record<string, unknown> = {
-    properties: {
-      variables: {
-        title: {
-          type: 'string',
-          enum: ['Custom Metadata Title'],
-          required: true,
-        },
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile({}, data), outputSchema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile({}, data)
+  t.true(output.variables?.title === 'Custom Metadata Title')
 })
 
 test('Custom metadata values are overridden by in-document values', (t) => {
   const data = {
-    customMetadata: {
-      title: 'Custom Metadata Title',
-    },
+    title: 'Custom Metadata Title',
   }
-  const outputSchema: Record<string, unknown> = {
-    properties: {
-      variables: {
-        title: {
-          type: 'string',
-          enum: ['Standard Title'],
-          required: true,
-        },
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile({ title: 'Standard Title' }, data), outputSchema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile({ title: 'Standard Title' }, data)
+  t.true(output.variables?.title === 'Standard Title')
 })
 
 test('Custom metadata overrides base configuration', (t) => {
@@ -382,47 +214,18 @@ test('Custom metadata overrides base configuration', (t) => {
       title: 'Default Title',
     },
   }
-  const outputSchema: Record<string, unknown> = {
-    properties: {
-      variables: {
-        title: {
-          type: 'string',
-          enum: ['Custom Metadata Title'],
-          required: true,
-        },
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile({}, customMetadata, pandocBase), outputSchema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile({}, customMetadata, pandocBase)
+  t.true(output.variables?.title === 'Custom Metadata Title')
 })
 
 test('toc is output as a root key', (t) => {
-  const outputSchema: Record<string, unknown> = {
-    properties: {
-      toc: {
-        type: 'boolean',
-        enum: [true],
-        required: true,
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile({ toc: true }), outputSchema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile({ toc: true })
+  t.true(output.toc === true)
 })
 
 test('table-of-contents is output as a root key', (t) => {
-  const outputSchema: Record<string, unknown> = {
-    properties: {
-      'table-of-contents': {
-        type: 'boolean',
-        enum: [true],
-        required: true,
-      },
-    },
-  }
-  const validated = revalidator.validate(makeDefaultsFile({ 'table-of-contents': true }), outputSchema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile({ 'table-of-contents': true })
+  t.true(output['table-of-contents'] === true)
 })
 
 test('Keys that do not collide are preserved when properties merged', (t) => {
@@ -431,18 +234,9 @@ test('Keys that do not collide are preserved when properties merged', (t) => {
       'title-page-background': '/working/resources/template_resources/lackadaisical_title.pdf',
     },
   }
-  const outputSchema: Record<string, unknown> = {
-    properties: {
-      variables: {
-        'title-page-background': {
-          type: 'string',
-          enum: ['/working/resources/template_resources/lackadaisical_title.pdf'],
-          required: true,
-        },
-      },
-    },
-  }
-  console.error(makeDefaultsFile({ title: 'Custom Title' }, customMetadata))
-  const validated = revalidator.validate(makeDefaultsFile({ title: 'Custom Title' }, customMetadata), outputSchema)
-  t.true(validated.errors.length == 0)
+  const output = makeDefaultsFile({ title: 'Custom Title' }, customMetadata)
+  t.true(
+    output.variables?.title === 'Custom Title' &&
+      output.variables['title-page-background'] === '/working/resources/template_resources/lackadaisical_title.pdf'
+  )
 })
