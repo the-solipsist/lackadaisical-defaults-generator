@@ -410,6 +410,7 @@ test('toc is output as a root key', (t) => {
   const validated = revalidator.validate(makeDefaultsFile({ toc: true }), outputSchema)
   t.true(validated.errors.length == 0)
 })
+
 test('table-of-contents is output as a root key', (t) => {
   const outputSchema: Record<string, unknown> = {
     properties: {
@@ -421,5 +422,27 @@ test('table-of-contents is output as a root key', (t) => {
     },
   }
   const validated = revalidator.validate(makeDefaultsFile({ 'table-of-contents': true }), outputSchema)
+  t.true(validated.errors.length == 0)
+})
+
+test.only('Keys that do not collide are preserved when properties merged', (t) => {
+  const customMetadata = {
+    variables: {
+      'title-page-background': '/working/resources/template_resources/lackadaisical_title.pdf',
+    },
+  }
+  const outputSchema: Record<string, unknown> = {
+    properties: {
+      variables: {
+        'title-page-background': {
+          type: 'string',
+          enum: ['/working/resources/template_resources/lackadaisical_title.pdf'],
+          required: true,
+        },
+      },
+    },
+  }
+  console.error(makeDefaultsFile({ title: 'Custom Title' }, customMetadata))
+  const validated = revalidator.validate(makeDefaultsFile({ title: 'Custom Title' }, customMetadata), outputSchema)
   t.true(validated.errors.length == 0)
 })
