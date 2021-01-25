@@ -20,9 +20,7 @@ import getWriter from '../src/util/getWriter'
 process.chdir('./test')
 
 test('Valid Pandoc defaults file passes JSONSchema validation', (t) => {
-  const data: Record<string, unknown> = YAML.parse(
-    fs.readFileSync('./defaults.yaml', 'utf-8')
-  )
+  const data: Record<string, unknown> = YAML.parse(fs.readFileSync('./defaults.yaml', 'utf-8'))
   t.notThrows(() => {
     validateAgainstSchema(data), 'Frontmatter validation returned errors.'
   })
@@ -74,9 +72,7 @@ test('isDefaultProperty returns false for custom properties', (t) => {
 })
 
 test('makeDefaultsFile returns with valid input', (t) => {
-  const frontmatter = YAML.parse(
-    fs.readFileSync('./valid-frontmatter.yaml', 'utf-8')
-  )
+  const frontmatter = YAML.parse(fs.readFileSync('./valid-frontmatter.yaml', 'utf-8'))
   const schema: Record<string, unknown> = {
     properties: {
       variables: {
@@ -134,12 +130,9 @@ test('makeDefaultsFile returns with valid input', (t) => {
 })
 
 test('makeDefaultsFile throws an error with invalid input', (t) => {
-  const frontmatter = YAML.parse(
-    fs.readFileSync('./invalid-frontmatter.yaml', 'utf-8')
-  )
+  const frontmatter = YAML.parse(fs.readFileSync('./invalid-frontmatter.yaml', 'utf-8'))
   const error = t.throws(() => {
-    makeDefaultsFile(frontmatter),
-      t.is(error.message, 'Frontmatter validation returned errors.')
+    makeDefaultsFile(frontmatter), t.is(error.message, 'Frontmatter validation returned errors.')
   })
 })
 
@@ -226,8 +219,7 @@ test('Invalid writer fails schema validation', (t) => {
     writer: 'not-a-real-writer',
   }
   const error = t.throws(() => {
-    makeDefaultsFile(data),
-      t.is(error.message, 'Frontmatter validation returned errors.')
+    makeDefaultsFile(data), t.is(error.message, 'Frontmatter validation returned errors.')
   })
 })
 
@@ -245,8 +237,7 @@ test('Invalid reader fails schema validation', (t) => {
     reader: 'not-a-real-reader',
   }
   const error = t.throws(() => {
-    makeDefaultsFile(data),
-      t.is(error.message, 'Frontmatter validation returned errors.')
+    makeDefaultsFile(data), t.is(error.message, 'Frontmatter validation returned errors.')
   })
 })
 
@@ -317,10 +308,7 @@ test('Explicit outputFile passed to makeDefaultsFile overrides yaml input', (t) 
       },
     },
   }
-  const validated = revalidator.validate(
-    makeDefaultsFile(data, undefined, undefined, path.resolve(output)),
-    schema
-  )
+  const validated = revalidator.validate(makeDefaultsFile(data, undefined, undefined, path.resolve(output)), schema)
   t.true(validated.errors.length == 0)
 })
 
@@ -337,10 +325,7 @@ test('Explicit writer passed to makeDefaultsFile overrides yaml input', (t) => {
       },
     },
   }
-  const validated = revalidator.validate(
-    makeDefaultsFile(data, undefined, undefined, undefined, 'html'),
-    schema
-  )
+  const validated = revalidator.validate(makeDefaultsFile(data, undefined, undefined, undefined, 'html'), schema)
   t.true(validated.errors.length == 0)
 })
 
@@ -361,10 +346,7 @@ test('Custom metadata objects are accepted', (t) => {
       },
     },
   }
-  const validated = revalidator.validate(
-    makeDefaultsFile({}, data),
-    outputSchema
-  )
+  const validated = revalidator.validate(makeDefaultsFile({}, data), outputSchema)
   t.true(validated.errors.length == 0)
 })
 
@@ -385,10 +367,7 @@ test('Custom metadata values are overridden by in-document values', (t) => {
       },
     },
   }
-  const validated = revalidator.validate(
-    makeDefaultsFile({ title: 'Standard Title' }, data),
-    outputSchema
-  )
+  const validated = revalidator.validate(makeDefaultsFile({ title: 'Standard Title' }, data), outputSchema)
   t.true(validated.errors.length == 0)
 })
 
@@ -414,10 +393,7 @@ test('Custom metadata overrides base configuration', (t) => {
       },
     },
   }
-  const validated = revalidator.validate(
-    makeDefaultsFile({}, customMetadata, pandocBase),
-    outputSchema
-  )
+  const validated = revalidator.validate(makeDefaultsFile({}, customMetadata, pandocBase), outputSchema)
   t.true(validated.errors.length == 0)
 })
 
@@ -431,10 +407,7 @@ test('toc is output as a root key', (t) => {
       },
     },
   }
-  const validated = revalidator.validate(
-    makeDefaultsFile({ toc: true }),
-    outputSchema
-  )
+  const validated = revalidator.validate(makeDefaultsFile({ toc: true }), outputSchema)
   t.true(validated.errors.length == 0)
 })
 test('table-of-contents is output as a root key', (t) => {
@@ -447,9 +420,6 @@ test('table-of-contents is output as a root key', (t) => {
       },
     },
   }
-  const validated = revalidator.validate(
-    makeDefaultsFile({ 'table-of-contents': true }),
-    outputSchema
-  )
+  const validated = revalidator.validate(makeDefaultsFile({ 'table-of-contents': true }), outputSchema)
   t.true(validated.errors.length == 0)
 })
