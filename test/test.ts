@@ -96,7 +96,6 @@ test('processProperties places special case in object.metadata', (t) => {
     csl: 'https://www.zotero.org/styles/vancouver-superscript',
   }
   const output = processProperties(property)
-  console.error(output)
   t.true(
     Object.prototype.hasOwnProperty.call(output.metadata, 'csl') &&
       output.metadata?.csl === 'https://www.zotero.org/styles/vancouver-superscript'
