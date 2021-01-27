@@ -14,6 +14,12 @@
   "author": "Matt Jolly <Kangie@footclan.ninja>",
   "license": "GPL-3.0-or-later",
   "private": false,
+  "dependencies": {
+    "ajv": "^7.0.3",
+    "ajv-formats": "^1.5.1",
+    "lodash": "^4.17.20",
+    "path": "^0.12.7"
+  },
   "devDependencies": {
     "@ava/typescript": "^1.1.1",
     "@types/js-yaml": "^4.0.0",
@@ -51,12 +57,6 @@
     ]
   },
   "type": "commonjs",
-  "dependencies": {
-    "ajv": "^7.0.3",
-    "ajv-formats": "^1.5.1",
-    "lodash": "^4.17.20",
-    "path": "^0.12.7"
-  },
   "files": [
     "./dist/src/**"
   ]
