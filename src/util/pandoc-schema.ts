@@ -145,6 +145,7 @@ type PandocDefaults = {
   bibliography: string
   'citation-abbreviations': string
   'cite-method': string
+  citeproc: boolean
   columns: number
   csl: string
   css: string
@@ -263,6 +264,9 @@ const defaultsSchema: JSONSchemaType<PandocDefaults> = {
     'cite-method': {
       enum: ['citeproc', 'natbib', 'biblatex'],
       type: 'string',
+    },
+    citeproc: {
+      type: 'boolean',
     },
     columns: {
       description:
